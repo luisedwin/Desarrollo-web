@@ -1,0 +1,241 @@
+<div class="catalogo-wrapper anim-fade">
+
+  <!-- Encabezado Principal y Métricas -->
+  <div class="catalogo-hero">
+    <div class="hero-texto">
+      <div class="hero-tag">COLECCIÓN PRINCIPAL</div>
+      <h1>Catálogo Literario</h1>
+      <p class="catalogo-sub">
+        Explora las obras de la biblioteca virtual, consulta ejemplares físicos y gestiona la disponibilidad en tiempo real.
+      </p>
+    </div>
+
+    @if (esAdmin()) {
+      <div class="hero-acciones">
+        <a routerLink="/libros/nuevo" class="btn btn-primario btn-nuevo">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          <span>Añadir Nuevo Libro</span>
+        </a>
+      </div>
+    }
+  </div>
+
+  <!-- Barra de Métricas de la Biblioteca -->
+  <div class="metricas-grid">
+    <div class="metrica-card">
+      <div class="metrica-icono">📚</div>
+      <div class="metrica-datos">
+        <span class="metrica-valor">{{ totalLibros() }}</span>
+        <span class="metrica-label">Obras Registradas</span>
+      </div>
+    </div>
+    <div class="metrica-card">
+      <div class="metrica-icono">🖋️</div>
+      <div class="metrica-datos">
+        <span class="metrica-valor">{{ totalAutores() }}</span>
+        <span class="metrica-label">Autores Distintos</span>
+      </div>
+    </div>
+    <div class="metrica-card">
+      <div class="metrica-icono">🏛️</div>
+      <div class="metrica-datos">
+        <span class="metrica-valor">Activa</span>
+        <span class="metrica-label">Colección San Lorenzo</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Barra de Búsqueda y Selector de Vista -->
+  <div class="toolbar">
+    <div class="buscador-caja">
+      <svg class="icono-lupa" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input
+        class="buscador-input"
+        type="search"
+        placeholder="Buscar por título, autor o código ISBN…"
+        [value]="busqueda()"
+        (input)="buscar($event)"
+      />
+      @if (busqueda()) {
+        <button type="button" class="btn-limpiar" (click)="limpiarBusqueda()" title="Limpiar búsqueda">✕</button>
+      }
+    </div>
+
+    <div class="vista-selector">
+      <button
+        type="button"
+        class="btn-vista"
+        [class.activo]="vista() === 'grid'"
+        (click)="cambiarVista('grid')"
+        title="Vista de Estantería Virtual"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect width="7" height="7" x="3" y="3" rx="1"></rect>
+          <rect width="7" height="7" x="14" y="3" rx="1"></rect>
+          <rect width="7" height="7" x="14" y="14" rx="1"></rect>
+          <rect width="7" height="7" x="3" y="14" rx="1"></rect>
+        </svg>
+        <span>Estantería</span>
+      </button>
+
+      <button
+        type="button"
+        class="btn-vista"
+        [class.activo]="vista() === 'tabla'"
+        (click)="cambiarVista('tabla')"
+        title="Vista de Tabla Detallada"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="8" y1="6" x2="21" y2="6"></line>
+          <line x1="8" y1="12" x2="21" y2="12"></line>
+          <line x1="8" y1="18" x2="21" y2="18"></line>
+          <line x1="3" y1="6" x2="3.01" y2="6"></line>
+          <line x1="3" y1="12" x2="3.01" y2="12"></line>
+          <line x1="3" y1="18" x2="3.01" y2="18"></line>
+        </svg>
+        <span>Tabla</span>
+      </button>
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="alerta-error">
+      <span>{{ error() }}</span>
+      <button class="btn btn-sm" (click)="cargar()">Reintentar</button>
+    </div>
+  }
+
+  @if (cargando()) {
+    <div class="cargando-contenedor">
+      <div class="spinner"></div>
+      <p>Cargando catálogo literario…</p>
+    </div>
+  } @else {
+
+    <!-- ==================== VISTA 1: ESTANTERÍA VIRTUAL (GRID) ==================== -->
+    @if (vista() === 'grid') {
+      <div class="libros-grid">
+        @for (libro of librosFiltrados(); track libro.id) {
+          <article class="libro-card">
+            <!-- Portada Estilizada 3D del Libro -->
+            <div class="libro-portada" [style.background]="obtenerGradiente(libro.id)">
+              <div class="libro-lomo"></div>
+              <div class="libro-portada-badge">
+                {{ libro.anioPublicacion ?? 'S/F' }}
+              </div>
+              <div class="libro-portada-adorno">✦ ✦ ✦</div>
+              <h2 class="libro-portada-titulo">{{ libro.titulo }}</h2>
+            </div>
+
+            <!-- Cuerpo del Libro -->
+            <div class="libro-cuerpo">
+              <div class="libro-autor-linea">
+                <span class="autor-icono">🖋️</span>
+                <span class="libro-autor">{{ libro.autor }}</span>
+              </div>
+
+              <div class="libro-meta">
+                @if (libro.isbn) {
+                  <span class="isbn-tag" title="ISBN">ISBN: {{ libro.isbn }}</span>
+                }
+                <span class="id-tag">#{{ libro.id }}</span>
+              </div>
+
+              <div class="libro-pie">
+                <a class="btn btn-sm btn-ejemplares" routerLink="/ejemplares" [queryParams]="{ libroId: libro.id }">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"></path>
+                  </svg>
+                  <span>Ver Ejemplares</span>
+                </a>
+
+                @if (esAdmin()) {
+                  <div class="admin-actions">
+                    <a class="btn btn-sm btn-icon" [routerLink]="['/libros', libro.id, 'editar']" title="Editar libro">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                      </svg>
+                    </a>
+                    <button class="btn btn-sm btn-peligro btn-icon" (click)="eliminar(libro)" title="Eliminar obra">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                      </svg>
+                    </button>
+                  </div>
+                }
+              </div>
+            </div>
+          </article>
+        } @empty {
+          <div class="vacio-box">
+            <div class="vacio-icono">📖</div>
+            <h3>No se encontraron obras</h3>
+            <p>No hay libros que coincidan con el término "{{ busqueda() }}".</p>
+            @if (busqueda()) {
+              <button class="btn btn-sm" (click)="limpiarBusqueda()">Limpiar búsqueda</button>
+            }
+          </div>
+        }
+      </div>
+    }
+
+    <!-- ==================== VISTA 2: TABLA DETALLADA ==================== -->
+    @if (vista() === 'tabla') {
+      <div class="tarjeta tabla-contenedor anim-fade">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 70px;">ID</th>
+              <th>Título de la Obra</th>
+              <th>Autor</th>
+              <th>ISBN</th>
+              <th>Año</th>
+              <th style="text-align: right;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (libro of librosFiltrados(); track libro.id) {
+              <tr>
+                <td><span class="id-tag">#{{ libro.id }}</span></td>
+                <td>
+                  <strong class="libro-tabla-titulo">{{ libro.titulo }}</strong>
+                </td>
+                <td>
+                  <span class="libro-tabla-autor">{{ libro.autor }}</span>
+                </td>
+                <td>
+                  <code class="codigo-isbn">{{ libro.isbn }}</code>
+                </td>
+                <td>
+                  <span class="badge badge-gris">{{ libro.anioPublicacion ?? '—' }}</span>
+                </td>
+                <td class="acciones">
+                  <a class="btn btn-sm" routerLink="/ejemplares" [queryParams]="{ libroId: libro.id }">
+                    Ejemplares
+                  </a>
+                  @if (esAdmin()) {
+                    <a class="btn btn-sm" [routerLink]="['/libros', libro.id, 'editar']">Editar</a>
+                    <button class="btn btn-sm btn-peligro" (click)="eliminar(libro)">Eliminar</button>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="vacio">No hay libros para mostrar con el filtro actual.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+
+  }
+
+</div>

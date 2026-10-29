@@ -1,0 +1,237 @@
+.login-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 160px);
+  padding: 24px 0;
+}
+
+.login-container {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  width: 100%;
+  max-width: 980px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg), 0 0 50px -15px rgba(0, 0, 0, 0.6);
+}
+
+/* Panel Hero Izquierdo */
+.login-hero {
+  position: relative;
+  background: linear-gradient(145deg, #0b1120 0%, #030712 100%);
+  padding: 48px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  border-right: 1px solid var(--border-subtle);
+  color: #f8fafc;
+}
+
+[data-theme="light"] .login-hero {
+  background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+}
+
+.hero-glow {
+  position: absolute;
+  top: -100px;
+  left: -100px;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.25) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--accent-gold);
+  margin-bottom: 20px;
+}
+
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-gold);
+  box-shadow: 0 0 8px var(--accent-gold);
+}
+
+.hero-titulo {
+  font-size: 2.2rem;
+  color: #ffffff;
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+
+.hero-subtitulo {
+  color: #94a3b8;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.hero-cita {
+  margin: 32px 0;
+  padding: 20px;
+  border-left: 3px solid var(--accent-gold);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 0 10px 10px 0;
+}
+
+.hero-cita blockquote {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: 1.05rem;
+  color: #e2e8f0;
+  margin-bottom: 6px;
+}
+
+.hero-cita cite {
+  font-size: 0.8rem;
+  color: var(--accent-gold);
+  font-style: normal;
+  font-weight: 600;
+}
+
+.hero-features {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.85rem;
+}
+
+.feature-icon {
+  font-size: 1.3rem;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 8px;
+  border-radius: 10px;
+}
+
+.feature-item strong {
+  display: block;
+  color: #ffffff;
+  font-size: 0.88rem;
+}
+
+.feature-item span {
+  color: #94a3b8;
+  font-size: 0.78rem;
+}
+
+/* Panel Formulario Derecho */
+.login-card {
+  padding: 48px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: var(--bg-card);
+}
+
+.card-header {
+  margin-bottom: 24px;
+}
+
+.card-titulo {
+  font-size: 1.8rem;
+  margin-bottom: 6px;
+}
+
+.card-subtitulo {
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+}
+
+/* Demo Box */
+.demo-box {
+  background: var(--bg-surface);
+  border: 1px dashed var(--accent-gold);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.demo-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.demo-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.demo-email {
+  font-size: 0.82rem;
+  color: var(--text-primary);
+  font-family: monospace;
+}
+
+.demo-box-bloqueado {
+  border-color: var(--accent-danger) !important;
+  background: var(--accent-danger-bg) !important;
+}
+
+.demo-bloqueado-msg {
+  font-size: 0.82rem;
+  color: var(--accent-danger);
+  font-weight: 700;
+}
+
+.btn-lg {
+  padding: 13px 20px;
+  font-size: 1rem;
+  margin-top: 6px;
+}
+
+.card-footer {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+.card-footer a {
+  color: var(--accent-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.card-footer a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 860px) {
+  .login-container {
+    grid-template-columns: 1fr;
+  }
+  .login-hero {
+    display: none;
+  }
+  .login-card {
+    padding: 32px 24px;
+  }
+}

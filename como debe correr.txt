@@ -1,0 +1,118 @@
+Aquí tienes la guía paso a paso para levantar el proyecto desde **Consola / Terminal** y desde **cualquier IDE** (VS Code, IntelliJ IDEA, Eclipse, etc.).
+
+---
+
+### 1. Requisitos Previos en la Máquina
+Antes de arrancar, asegúrate de tener instalado:
+1. **Java JDK 17 o superior** (puedes verificarlo con `java -version`).
+2. **Node.js (versión 18 o superior) y npm** (puedes verificarlo con `node -v` y `npm -v`).
+3. **PostgreSQL** corriendo en el puerto `5432` con tu base de datos creada en pgAdmin (ej. `Libreria_DB`).
+4. Si creas la base de datos desde cero en pgAdmin, ejecuta en su Query Tool los dos archivos en este orden:
+   - [schema.sql](file:///c:/Users/luise/Downloads/Desarrollo%20web/biblioteca-backend/database/schema.sql)
+   - [02_seguridad.sql](file:///c:/Users/luise/Downloads/Desarrollo%20web/biblioteca-backend/database/02_seguridad.sql)
+
+---
+
+### 2. Configuración del Archivo `.env` en el Backend
+Asegúrate de que dentro de la carpeta `biblioteca-backend/` exista el archivo [.env](file:///c:/Users/luise/Downloads/Desarrollo%20web/biblioteca-backend/.env) con tus credenciales:
+
+```properties
+DB_URL=jdbc:postgresql://localhost:5432/Libreria_DB
+DB_USER=postgress
+DB_PASSWORD=root
+JWT_SECRET=a1oOibuOpYHq1Vpv4UHQRI6oUn2X6tt33iXuBdtwyXS5lgD8
+ADMIN_EMAIL=admin@biblioteca.com
+ADMIN_PASSWORD=admin1234
+```
+
+---
+
+### 3. Cómo Levantar el Proyecto por Consola / Terminal
+
+Necesitas abrir **dos terminales** (una para el Backend y otra para el Frontend):
+
+#### 🖥️ Terminal 1 — Backend (Spring Boot)
+1. Entra a la carpeta del backend:
+   ```bash
+   cd "biblioteca-backend"
+   ```
+2. Ejecuta el wrapper de Maven que ya viene incluido en el proyecto (no necesitas instalar Maven por separado):
+   - **En Windows (PowerShell / CMD):**
+     ```powershell
+     .\mvnw.cmd spring-boot:run
+     ```
+   - **En Mac / Linux:**
+     ```bash
+     ./mvnw spring-boot:run
+     ```
+3. Verás en la consola el logo de Spring Boot y el mensaje:
+   `Tomcat started on port 8080 (http)`.
+
+---
+
+#### 🌐 Terminal 2 — Frontend (Angular)
+1. Entra a la carpeta del frontend:
+   ```bash
+   cd "biblioteca-frontend"
+   ```
+2. Instala las dependencias *(solo es necesario la primera vez)*:
+   ```bash
+   npm install
+   ```
+3. Inicia el servidor de desarrollo:
+   ```bash
+   npm start
+   ```
+4. Verás en la consola:
+   `➜ Local: http://localhost:4200/`.
+
+---
+
+### 4. Cómo Levantar el Proyecto en IDEs
+
+#### A. Visual Studio Code
+1. Abre la carpeta raíz `Desarrollo web` en VS Code (**File > Open Folder**).
+2. Abre la terminal integrada (**Ctrl + `** o **Terminal > New Terminal**).
+3. **Pestaña 1 de terminal (Backend):**
+   ```powershell
+   cd biblioteca-backend
+   .\mvnw.cmd spring-boot:run
+   ```
+   *(O si tienes instalada la extensión "Spring Boot Extension Pack", simplemente abre [BibliotecaBackendApplication.java](file:///c:/Users/luise/Downloads/Desarrollo%20web/biblioteca-backend/src/main/java/com/ejemplo/biblioteca/BibliotecaBackendApplication.java) y pulsa el botón **Run** arriba a la derecha).*
+4. Pulsa el botón **`+`** en la terminal para abrir una **Pestaña 2 (Frontend):**
+   ```powershell
+   cd biblioteca-frontend
+   npm start
+   ```
+
+---
+
+#### B. IntelliJ IDEA
+1. Abre IntelliJ y selecciona **File > Open**, eligiendo la carpeta `biblioteca-backend`.
+2. IntelliJ detectará automáticamente el archivo [pom.xml](file:///c:/Users/luise/Downloads/Desarrollo%20web/biblioteca-backend/pom.xml). Espera unos segundos a que descargue las dependencias.
+3. Busca el archivo [BibliotecaBackendApplication.java](file:///c:/Users/luise/Downloads/Desarrollo%20web/biblioteca-backend/src/main/java/com/ejemplo/biblioteca/BibliotecaBackendApplication.java) en:
+   `src/main/java/com/ejemplo/biblioteca/BibliotecaBackendApplication.java`.
+4. Haz clic en el icono verde de **Play (▶)** al lado de la clase o método `main`.
+5. En la barra inferior abre la pestaña **Terminal**, ingresa a `biblioteca-frontend` y ejecuta:
+   ```bash
+   npm start
+   ```
+
+---
+
+#### C. Eclipse / Spring Tool Suite (STS)
+1. Ve a **File > Import > Existing Maven Projects**.
+2. Selecciona la carpeta `biblioteca-backend` y pulsa **Finish**.
+3. Clic derecho sobre el proyecto en el explorador de paquetes:
+   **Run As > Spring Boot App** (o **Run As > Java Application** seleccionando `BibliotecaBackendApplication`).
+4. Para el frontend, abre tu terminal favorita, dirígete a `biblioteca-frontend` y corre `npm start`.
+
+---
+
+### 5. Acceder a la Aplicación
+1. Abre tu navegador web en:
+   👉 **http://localhost:4200**
+2. Inicia sesión con:
+   - **Correo:** `admin@biblioteca.com`
+   - **Contraseña:** `admin1234`
+   *(O haz clic en el botón de un solo toque: "Autocompletar y Entrar").*

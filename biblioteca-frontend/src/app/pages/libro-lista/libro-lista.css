@@ -1,0 +1,445 @@
+.catalogo-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Hero & Encabezado */
+.catalogo-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding-bottom: 8px;
+}
+
+.hero-tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--accent-gold);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.catalogo-hero h1 {
+  font-size: 2.3rem;
+  line-height: 1.15;
+  margin-bottom: 6px;
+}
+
+.catalogo-sub {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  max-width: 650px;
+}
+
+.btn-nuevo {
+  padding: 11px 22px;
+  font-size: 0.95rem;
+}
+
+/* Métricas de biblioteca */
+.metricas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.metrica-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.metrica-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-medium);
+}
+
+.metrica-icono {
+  font-size: 1.8rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.metrica-datos {
+  display: flex;
+  flex-direction: column;
+}
+
+.metrica-valor {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+
+.metrica-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+/* Toolbar: Buscador y Selector de Vista */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  padding: 12px 18px;
+  border-radius: 14px;
+}
+
+.buscador-caja {
+  position: relative;
+  flex: 1;
+  min-width: 280px;
+  display: flex;
+  align-items: center;
+}
+
+.icono-lupa {
+  position: absolute;
+  left: 14px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.buscador-input {
+  width: 100%;
+  padding: 10px 38px 10px 42px;
+  border: 1px solid var(--border-medium);
+  border-radius: 10px;
+  font-size: 0.92rem;
+  font-family: inherit;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.buscador-input:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+}
+
+.btn-limpiar {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 4px;
+}
+
+.btn-limpiar:hover {
+  color: var(--text-primary);
+}
+
+.vista-selector {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  padding: 3px;
+  border-radius: 9px;
+}
+
+.btn-vista {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 7px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-vista:hover {
+  color: var(--text-primary);
+}
+
+.btn-vista.activo {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ==================== VISTA 3D BOOK CARDS ==================== */
+.libros-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 24px;
+}
+
+.libro-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-book);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+  position: relative;
+}
+
+.libro-card:hover {
+  transform: translateY(-6px) rotate(0.4deg);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 20px 35px -8px rgba(0, 0, 0, 0.7), 0 0 25px -5px var(--accent-gold-glow);
+}
+
+[data-theme="light"] .libro-card:hover {
+  box-shadow: 0 16px 30px -6px rgba(15, 23, 42, 0.15), 0 0 20px -5px var(--accent-gold-glow);
+}
+
+.libro-portada {
+  height: 195px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: #ffffff;
+  overflow: hidden;
+}
+
+/* Lomo del libro simulado en CSS */
+.libro-lomo {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 14px;
+  background: linear-gradient(to right, rgba(0,0,0,0.5) 0%, rgba(255,255,255,0.12) 50%, rgba(0,0,0,0.3) 100%);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.libro-portada-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: rgba(11, 15, 23, 0.8);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--accent-gold);
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.05em;
+}
+
+.libro-portada-adorno {
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  color: var(--accent-gold);
+  opacity: 0.8;
+  margin-bottom: 6px;
+  margin-left: 6px;
+}
+
+.libro-portada-titulo {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.22;
+  color: #ffffff;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+  margin-left: 6px;
+  display: -webkit-box;
+  line-clamp: 3;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.libro-cuerpo {
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.libro-autor-linea {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.autor-icono {
+  font-size: 0.9rem;
+}
+
+.libro-autor {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.libro-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.isbn-tag {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-family: monospace;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.id-tag {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: rgba(148, 163, 184, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.libro-pie {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.btn-ejemplares {
+  background: var(--bg-surface);
+  border-color: var(--border-medium);
+  font-weight: 600;
+  flex: 1;
+}
+
+.btn-ejemplares:hover {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: #ffffff;
+}
+
+.admin-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-icon {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+/* ==================== VISTA TABLA ==================== */
+.libro-tabla-titulo {
+  font-size: 0.96rem;
+  color: var(--text-primary);
+}
+
+.libro-tabla-autor {
+  color: var(--text-secondary);
+}
+
+.codigo-isbn {
+  font-family: monospace;
+  font-size: 0.85rem;
+  background: var(--bg-surface);
+  padding: 2px 6px;
+  border-radius: 5px;
+  border: 1px solid var(--border-subtle);
+}
+
+/* Estados Vacíos & Spinners */
+.vacio-box {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 20px;
+  background: var(--bg-card);
+  border: 1px dashed var(--border-medium);
+  border-radius: 16px;
+}
+
+.vacio-icono {
+  font-size: 3rem;
+  margin-bottom: 12px;
+  opacity: 0.8;
+}
+
+.vacio-box h3 {
+  font-size: 1.3rem;
+  margin-bottom: 6px;
+}
+
+.vacio-box p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+}
+
+.cargando-contenedor {
+  text-align: center;
+  padding: 60px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  color: var(--text-secondary);
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--border-subtle);
+  border-top-color: var(--accent-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

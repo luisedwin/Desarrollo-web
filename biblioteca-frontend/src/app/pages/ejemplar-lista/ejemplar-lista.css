@@ -1,0 +1,64 @@
+.toolbar-ejemplares {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  padding: 16px 20px;
+  border-radius: 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.filtros-grupo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.select-wrapper {
+  min-width: 260px;
+  flex: 1;
+  max-width: 380px;
+}
+
+.select-wrapper select {
+  width: 100%;
+}
+
+.contador-ejemplares {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+.contador-ejemplares strong {
+  color: var(--text-primary);
+}
+
+.codigo-badge {
+  font-family: monospace;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-medium);
+  padding: 4px 10px;
+  border-radius: 7px;
+  display: inline-block;
+  box-shadow: var(--shadow-sm);
+}
+
+.ubicacion-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  padding: 3px 10px;
+  border-radius: 6px;
+}

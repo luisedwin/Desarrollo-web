@@ -1,0 +1,73 @@
+<div class="catalogo-wrapper anim-fade" style="max-width: 680px; margin: 0 auto;">
+  <div class="catalogo-hero" style="border: none; margin-bottom: 8px;">
+    <div>
+      <div class="hero-tag">{{ esEdicion ? 'MODIFICAR COPIA' : 'NUEVA COPIA FÍSICA' }}</div>
+      <h1>{{ esEdicion ? 'Editar Ejemplar' : 'Registrar Nuevo Ejemplar' }}</h1>
+      <p class="catalogo-sub">
+        Asigna el libro correspondiente, código único de inventario y estantería física.
+      </p>
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="alerta-error">
+      <span>{{ error() }}</span>
+    </div>
+  }
+
+  <form class="tarjeta formulario anim-fade" [formGroup]="form" (ngSubmit)="guardar()" style="max-width: none;">
+    <label>
+      Obra / Libro Asociado *
+      <select formControlName="libroId" [class.invalido]="invalido('libroId')">
+        <option [ngValue]="null" disabled>Selecciona el libro correspondiente…</option>
+        @for (libro of libros(); track libro.id) {
+          <option [ngValue]="libro.id">{{ libro.titulo }} ({{ libro.autor }})</option>
+        }
+      </select>
+      @if (invalido('libroId')) {
+        <small>Elige el libro al que pertenece la copia física.</small>
+      }
+    </label>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <label>
+        Código Único de Inventario *
+        <input formControlName="codigo" placeholder="Ej. CAS-003, CC-005…" [class.invalido]="invalido('codigo')" />
+        @if (invalido('codigo')) {
+          <small>El código de inventario es obligatorio.</small>
+        } @else {
+          <small class="ayuda">Etiqueta de inventario pegada en la tapa/lomo.</small>
+        }
+      </label>
+
+      <label>
+        Ubicación Física / Estante
+        <input formControlName="ubicacion" placeholder="Ej. Estante A2, Pasillo 3…" />
+        <small class="ayuda">Sección donde se encuentra físicamente.</small>
+      </label>
+    </div>
+
+    <label>
+      Estado del Ejemplar
+      @if (prestado()) {
+        <select disabled>
+          <option>Prestado</option>
+        </select>
+        <small class="ayuda">Actualmente prestado: pasará a Disponible al registrar su devolución.</small>
+      } @else {
+        <select formControlName="estado">
+          @for (estado of estados; track estado.valor) {
+            <option [ngValue]="estado.valor">{{ estado.texto }}</option>
+          }
+        </select>
+      }
+    </label>
+
+    <div class="botones" style="margin-top: 16px;">
+      <a routerLink="/ejemplares" class="btn">Cancelar</a>
+      <button type="submit" class="btn btn-primario" [disabled]="guardando()">
+        {{ guardando() ? 'Guardando copia…' : (esEdicion ? 'Actualizar Ejemplar' : 'Registrar Ejemplar') }}
+      </button>
+    </div>
+  </form>
+</div>

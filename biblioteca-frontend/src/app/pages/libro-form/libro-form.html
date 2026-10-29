@@ -1,0 +1,65 @@
+<div class="catalogo-wrapper anim-fade" style="max-width: 680px; margin: 0 auto;">
+  <div class="catalogo-hero" style="border: none; margin-bottom: 8px;">
+    <div>
+      <div class="hero-tag">{{ esEdicion ? 'MODIFICAR REGISTRO' : 'NUEVA INCORPORACIÓN' }}</div>
+      <h1>{{ esEdicion ? 'Editar Obra Literaria' : 'Registrar Nuevo Libro' }}</h1>
+      <p class="catalogo-sub">
+        Completa los metadatos bibliográficos de la obra para el catálogo digital.
+      </p>
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="alerta-error">
+      <span>{{ error() }}</span>
+    </div>
+  }
+
+  <form class="tarjeta formulario anim-fade" [formGroup]="form" (ngSubmit)="guardar()" style="max-width: none;">
+    <label>
+      Título de la Obra *
+      <input formControlName="titulo" placeholder="Ej. El Principito, Cien Años de Soledad…" [class.invalido]="invalido('titulo')" />
+      @if (invalido('titulo')) {
+        <small>El título es obligatorio.</small>
+      }
+    </label>
+
+    <label>
+      Autor Principal *
+      <input formControlName="autor" placeholder="Ej. Antoine de Saint-Exupéry" [class.invalido]="invalido('autor')" />
+      @if (invalido('autor')) {
+        <small>El autor es obligatorio.</small>
+      }
+    </label>
+
+    <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px;">
+      <label>
+        Código ISBN
+        <input formControlName="isbn" placeholder="Ej. 978-0132350884" [class.invalido]="invalido('isbn')" />
+        @if (invalido('isbn')) {
+          <small>Usa solo números y guiones (10 a 17 caracteres).</small>
+        }
+      </label>
+
+      <label>
+        Año de Publicación
+        <input
+          type="number"
+          formControlName="anioPublicacion"
+          placeholder="Ej. 1943"
+          [class.invalido]="invalido('anioPublicacion')"
+        />
+        @if (invalido('anioPublicacion')) {
+          <small>Ingresa un año entre 0 y {{ anioActual }}.</small>
+        }
+      </label>
+    </div>
+
+    <div class="botones" style="margin-top: 16px;">
+      <a routerLink="/libros" class="btn">Cancelar</a>
+      <button type="submit" class="btn btn-primario" [disabled]="guardando()">
+        {{ guardando() ? 'Guardando cambios…' : (esEdicion ? 'Actualizar Libro' : 'Registrar Libro') }}
+      </button>
+    </div>
+  </form>
+</div>

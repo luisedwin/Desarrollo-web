@@ -1,0 +1,67 @@
+.toolbar-prestamos {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  padding: 16px 20px;
+  border-radius: 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.switch-filtro {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.switch-label {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.contador-prestamos {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+.contador-prestamos strong {
+  color: var(--text-primary);
+}
+
+.socio-columna {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.socio-avatar-sm {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-gold) 0%, #b45309 100%);
+  color: #0b0f17;
+  font-weight: 800;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.socio-titulo {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.fecha-item {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  display: inline-block;
+  white-space: nowrap;
+}

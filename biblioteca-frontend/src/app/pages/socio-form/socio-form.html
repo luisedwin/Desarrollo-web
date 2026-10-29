@@ -1,0 +1,75 @@
+<div class="catalogo-wrapper anim-fade" style="max-width: 680px; margin: 0 auto;">
+  <div class="catalogo-hero" style="border: none; margin-bottom: 8px;">
+    <div>
+      <div class="hero-tag">{{ esEdicion ? 'ACTUALIZAR FICHA' : 'NUEVA MEMBRESÍA' }}</div>
+      <h1>{{ esEdicion ? 'Editar Socio Lector' : 'Registrar Nuevo Socio' }}</h1>
+      <p class="catalogo-sub">
+        Ficha personal de identificación, datos de contacto y estado de habilitación.
+      </p>
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="alerta-error">
+      <span>{{ error() }}</span>
+    </div>
+  }
+
+  <form class="tarjeta formulario anim-fade" [formGroup]="form" (ngSubmit)="guardar()" style="max-width: none;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <label>
+        Nombre *
+        <input formControlName="nombre" placeholder="Ej. Ana, Luis…" [class.invalido]="invalido('nombre')" />
+        @if (invalido('nombre')) {
+          <small>El nombre es obligatorio.</small>
+        }
+      </label>
+
+      <label>
+        Apellido *
+        <input formControlName="apellido" placeholder="Ej. Torres, Ramos…" [class.invalido]="invalido('apellido')" />
+        @if (invalido('apellido')) {
+          <small>El apellido es obligatorio.</small>
+        }
+      </label>
+    </div>
+
+    <label>
+      Documento Nacional de Identidad (DNI / Cédula) *
+      <input formControlName="documento" placeholder="Ej. 70123456" [class.invalido]="invalido('documento')" />
+      @if (invalido('documento')) {
+        <small>Ingresa un documento válido (6 a 20 caracteres numéricos/alfanuméricos).</small>
+      }
+    </label>
+
+    <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px;">
+      <label>
+        Correo Electrónico
+        <input type="email" formControlName="email" placeholder="lector@correo.com" [class.invalido]="invalido('email')" />
+        @if (invalido('email')) {
+          <small>Ingresa un email válido.</small>
+        }
+      </label>
+
+      <label>
+        Teléfono Móvil
+        <input formControlName="telefono" placeholder="+51 987654321" [class.invalido]="invalido('telefono')" />
+        @if (invalido('telefono')) {
+          <small>Solo dígitos y caracteres válidos.</small>
+        }
+      </label>
+    </div>
+
+    <label class="check" style="background: var(--bg-surface); border: 1px solid var(--border-subtle); padding: 12px 16px; border-radius: 9px; margin-top: 4px;">
+      <input type="checkbox" formControlName="activo" style="width: 17px; height: 17px; accent-color: var(--accent-primary);" />
+      <span><strong>Socio Activo</strong> (Habilitado para solicitar y retirar préstamos)</span>
+    </label>
+
+    <div class="botones" style="margin-top: 16px;">
+      <a routerLink="/socios" class="btn">Cancelar</a>
+      <button type="submit" class="btn btn-primario" [disabled]="guardando()">
+        {{ guardando() ? 'Guardando ficha…' : (esEdicion ? 'Actualizar Socio' : 'Registrar Socio') }}
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,123 @@
+<div class="login-wrapper anim-fade">
+  <div class="login-container">
+    
+    <!-- Panel Izquierdo: Branding & Ambiente Literario -->
+    <div class="login-hero">
+      <div class="hero-glow"></div>
+      <div class="hero-top">
+        <div class="hero-badge">
+          <span class="badge-dot"></span>
+          <span>SISTEMA BIBLIOTECARIO DIGITAL</span>
+        </div>
+        <h2 class="hero-titulo">Athenaeum Library</h2>
+        <p class="hero-subtitulo">
+          Donde las ideas y las páginas cobran vida en una experiencia de lectura moderna y ordenada.
+        </p>
+      </div>
+
+      <div class="hero-cita">
+        <blockquote>
+          “Un libro es una versión portátil de un amigo sabio.”
+        </blockquote>
+        <cite>— Colección San Lorenzo</cite>
+      </div>
+
+      <div class="hero-features">
+        <div class="feature-item">
+          <div class="feature-icon">📚</div>
+          <div>
+            <strong>Catálogo Centralizado</strong>
+            <span>Control integral de títulos e ISBN</span>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🔖</div>
+          <div>
+            <strong>Gestión de Ejemplares</strong>
+            <span>Disponibilidad y estado en tiempo real</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel Derecho: Formulario de Acceso -->
+    <div class="login-card">
+      <div class="card-header">
+        <h1 class="card-titulo">Iniciar Sesión</h1>
+        <p class="card-subtitulo">Ingresa tus credenciales para acceder al sistema</p>
+      </div>
+
+      @if (error()) {
+        <div class="alerta-error">
+          <span>{{ error() }}</span>
+        </div>
+      }
+
+      <!-- Acceso Rápido Solo para Usuarios -->
+      <div class="demo-box" [class.demo-box-bloqueado]="esCorreoAdmin()">
+        <div class="demo-info">
+          <span class="demo-label">⚡ Autocompletado (Solo Usuarios)</span>
+          @if (esCorreoAdmin()) {
+            <span class="demo-bloqueado-msg">⚠️ Autocompletado deshabilitado para Administrador</span>
+          } @else if (form.controls.email.value.trim()) {
+            <span class="demo-email">Autocompletar sesión como: {{ form.controls.email.value }}</span>
+          } @else {
+            <span class="demo-email">Cualquier correo de usuario permite autocompletar</span>
+          }
+        </div>
+        <button
+          type="button"
+          class="btn btn-sm btn-dorado"
+          (click)="autocompletarUsuario()"
+          [disabled]="enviando() || esCorreoAdmin()"
+          [title]="esCorreoAdmin() ? 'El autocompletado no está permitido para el administrador' : 'Autocompletar y entrar como usuario'"
+        >
+          Autocompletar y Entrar
+        </button>
+      </div>
+
+      <form class="formulario" [formGroup]="form" (ngSubmit)="entrar()">
+        <label>
+          Correo Electrónico
+          <input
+            type="email"
+            formControlName="email"
+            autocomplete="username"
+            placeholder="ejemplo@biblioteca.com"
+            [class.invalido]="invalido('email')"
+          />
+          @if (invalido('email')) {
+            <small>Por favor, ingresa un correo válido.</small>
+          }
+        </label>
+
+        <label>
+          Contraseña
+          <input
+            type="password"
+            formControlName="password"
+            autocomplete="current-password"
+            placeholder="••••••••"
+            [class.invalido]="invalido('password')"
+          />
+          @if (invalido('password')) {
+            <small>La contraseña es obligatoria.</small>
+          }
+        </label>
+
+        <button type="submit" class="btn btn-primario btn-lg" [disabled]="enviando()">
+          @if (enviando()) {
+            <span>Accediendo al catálogo…</span>
+          } @else {
+            <span>Ingresar a la Biblioteca</span>
+          }
+        </button>
+      </form>
+
+      <div class="card-footer">
+        <p>¿Aún no tienes cuenta de lector? <a routerLink="/registro">Regístrate gratis</a></p>
+      </div>
+    </div>
+
+  </div>
+</div>

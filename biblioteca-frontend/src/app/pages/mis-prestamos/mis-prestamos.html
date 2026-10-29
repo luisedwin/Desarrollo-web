@@ -1,0 +1,76 @@
+<div class="catalogo-wrapper anim-fade">
+  <div class="catalogo-hero">
+    <div>
+      <div class="hero-tag">MI CUENTA DE LECTOR</div>
+      <h1>Mis Préstamos Literarios</h1>
+      <p class="catalogo-sub">
+        Consulta el estado de los ejemplares que tienes en préstamo, sus fechas de vencimiento e historial de devoluciones.
+      </p>
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="alerta-error">
+      <span>{{ error() }}</span>
+    </div>
+  }
+
+  @if (cargando()) {
+    <div class="cargando-contenedor">
+      <div class="spinner"></div>
+      <p>Cargando tus préstamos…</p>
+    </div>
+  } @else {
+    <div class="tarjeta tabla-contenedor anim-fade">
+      <table>
+        <thead>
+          <tr>
+            <th>Obra / Título</th>
+            <th>Fecha de Préstamo</th>
+            <th>Fecha Límite</th>
+            <th>Devuelto el</th>
+            <th>Estado Actual</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (prestamo of prestamos(); track prestamo.id) {
+            <tr>
+              <td>
+                <strong class="libro-tabla-titulo">{{ prestamo.ejemplar.libro.titulo }}</strong>
+                <span class="secundario">Autor: {{ prestamo.ejemplar.libro.autor }} · Ejemplar: <code class="codigo-isbn">{{ prestamo.ejemplar.codigo }}</code></span>
+              </td>
+              <td>
+                <span style="font-size: 0.88rem; color: var(--text-secondary);">📅 {{ prestamo.fechaPrestamo | fecha }}</span>
+              </td>
+              <td>
+                <span style="font-size: 0.88rem; font-weight: 600;" [style.color]="prestamo.vencido && !prestamo.fechaDevolucionReal ? 'var(--accent-danger)' : 'var(--text-primary)'">
+                  ⏰ {{ prestamo.fechaDevolucionPrevista | fecha }}
+                </span>
+              </td>
+              <td>
+                <span style="font-size: 0.88rem; color: var(--text-secondary);">
+                  {{ prestamo.fechaDevolucionReal ? '✓ ' + (prestamo.fechaDevolucionReal | fecha) : '—' }}
+                </span>
+              </td>
+              <td>
+                @if (prestamo.fechaDevolucionReal) {
+                  <span class="badge badge-gris">Devuelto</span>
+                } @else if (prestamo.vencido) {
+                  <span class="badge badge-rojo">⚠️ Vencido</span>
+                } @else {
+                  <span class="badge badge-azul">En Curso</span>
+                }
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="5" class="vacio">
+                No tienes préstamos registrados en este momento. Puedes solicitar ejemplares disponibles en el mostrador.
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

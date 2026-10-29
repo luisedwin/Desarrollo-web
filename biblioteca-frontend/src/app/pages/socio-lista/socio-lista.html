@@ -1,0 +1,274 @@
+<div class="catalogo-wrapper anim-fade">
+  <div class="catalogo-hero">
+    <div>
+      <div class="hero-tag">PADRÓN DE USUARIOS</div>
+      <h1>Directorio de Socios</h1>
+      <p class="catalogo-sub">
+        Gestión de lectores registrados en el sistema, documentación de identidad y estado de membresía activa.
+      </p>
+    </div>
+    <div>
+      <a routerLink="/socios/nuevo" class="btn btn-primario btn-nuevo">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        <span>+ Registrar Nuevo Socio</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Métricas en Tarjetas Horizontales Separadas -->
+  <div class="metricas-grid">
+    <div class="metrica-card">
+      <div class="metrica-icono">👥</div>
+      <div class="metrica-datos">
+        <span class="metrica-valor">{{ totalSocios() }}</span>
+        <span class="metrica-label">Lectores Registrados</span>
+      </div>
+    </div>
+    <div class="metrica-card">
+      <div class="metrica-icono" style="color: var(--accent-success);">✅</div>
+      <div class="metrica-datos">
+        <span class="metrica-valor">{{ totalActivos() }}</span>
+        <span class="metrica-label">Membresías Habilitadas</span>
+      </div>
+    </div>
+    <div class="metrica-card">
+      <div class="metrica-icono" style="color: var(--text-muted);">⏸️</div>
+      <div class="metrica-datos">
+        <span class="metrica-valor">{{ totalInactivos() }}</span>
+        <span class="metrica-label">Cuentas Inactivas</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toolbar: Buscador Mejorado con Lupa, Píldoras de Estado y Selector de Vista -->
+  <div class="toolbar-socios">
+    <div class="buscador-caja">
+      <svg class="icono-lupa" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input
+        class="buscador-input"
+        type="search"
+        placeholder="Buscar por nombre, documento (DNI) o correo electrónico…"
+        [value]="busqueda()"
+        (input)="buscar($event)"
+      />
+      @if (busqueda()) {
+        <button type="button" class="btn-limpiar" (click)="limpiarBusqueda()" title="Limpiar búsqueda">✕</button>
+      }
+    </div>
+
+    <!-- Píldoras de Filtro -->
+    <div class="pildoras-filtro">
+      <button
+        type="button"
+        class="btn-pildora"
+        [class.activo]="filtroActivo() === 'TODOS'"
+        (click)="cambiarFiltroEstado('TODOS')"
+      >
+        Todos ({{ totalSocios() }})
+      </button>
+      <button
+        type="button"
+        class="btn-pildora"
+        [class.activo]="filtroActivo() === 'ACTIVOS'"
+        (click)="cambiarFiltroEstado('ACTIVOS')"
+      >
+        Activos ({{ totalActivos() }})
+      </button>
+      <button
+        type="button"
+        class="btn-pildora"
+        [class.activo]="filtroActivo() === 'INACTIVOS'"
+        (click)="cambiarFiltroEstado('INACTIVOS')"
+      >
+        Inactivos ({{ totalInactivos() }})
+      </button>
+    </div>
+
+    <!-- Selector de Vista Tarjetas / Tabla -->
+    <div class="vista-selector">
+      <button
+        type="button"
+        class="btn-vista"
+        [class.activo]="vista() === 'tarjetas'"
+        (click)="cambiarVista('tarjetas')"
+        title="Vista en Tarjetas de Socios"
+      >
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect width="7" height="7" x="3" y="3" rx="1"></rect>
+          <rect width="7" height="7" x="14" y="3" rx="1"></rect>
+          <rect width="7" height="7" x="14" y="14" rx="1"></rect>
+          <rect width="7" height="7" x="3" y="14" rx="1"></rect>
+        </svg>
+        <span>Tarjetas</span>
+      </button>
+
+      <button
+        type="button"
+        class="btn-vista"
+        [class.activo]="vista() === 'tabla'"
+        (click)="cambiarVista('tabla')"
+        title="Vista en Tabla"
+      >
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="8" y1="6" x2="21" y2="6"></line>
+          <line x1="8" y1="12" x2="21" y2="12"></line>
+          <line x1="8" y1="18" x2="21" y2="18"></line>
+          <line x1="3" y1="6" x2="3.01" y2="6"></line>
+          <line x1="3" y1="12" x2="3.01" y2="12"></line>
+          <line x1="3" y1="18" x2="3.01" y2="18"></line>
+        </svg>
+        <span>Tabla</span>
+      </button>
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="alerta-error">
+      <span>{{ error() }}</span>
+    </div>
+  }
+
+  @if (cargando()) {
+    <div class="cargando-contenedor">
+      <div class="spinner"></div>
+      <p>Cargando padrón de socios…</p>
+    </div>
+  } @else {
+
+    <!-- ==================== VISTA 1: EN TARJETAS INDIVIDUALES ==================== -->
+    @if (vista() === 'tarjetas') {
+      <div class="tarjetas-grid anim-fade">
+        @for (socio of sociosFiltrados(); track socio.id) {
+          <article class="dato-card">
+            <div class="dato-card-header">
+              <div class="socio-avatar-grupo">
+                <div class="socio-avatar">
+                  {{ socio.nombre.charAt(0) }}
+                </div>
+                <div>
+                  <h3 class="socio-nombre" style="font-size: 1.1rem; margin-bottom: 2px;">
+                    {{ socio.apellido }}, {{ socio.nombre }}
+                  </h3>
+                  <span class="documento-badge" style="font-size: 0.78rem; padding: 2px 7px;">
+                    🪪 {{ socio.documento }}
+                  </span>
+                </div>
+              </div>
+
+              @if (socio.activo) {
+                <span class="badge badge-verde">✓ Activo</span>
+              } @else {
+                <span class="badge badge-gris">Inactivo</span>
+              }
+            </div>
+
+            <div class="dato-card-body" style="gap: 8px;">
+              <div class="contacto-linea" style="display: flex; align-items: center; gap: 8px;">
+                <span style="color: var(--text-muted);">📧</span>
+                <span style="font-size: 0.88rem;">{{ socio.email ?? 'Sin correo registrado' }}</span>
+              </div>
+              @if (socio.telefono) {
+                <div class="contacto-linea" style="display: flex; align-items: center; gap: 8px;">
+                  <span style="color: var(--text-muted);">📞</span>
+                  <span style="font-size: 0.88rem;">{{ socio.telefono }}</span>
+                </div>
+              }
+              <div style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 4px;">
+                📅 Miembro desde: <strong>{{ socio.fechaRegistro | fecha }}</strong>
+              </div>
+            </div>
+
+            <div class="dato-card-footer">
+              <span class="secundario" style="margin: 0;">Socio #{{ socio.id }}</span>
+              <div class="acciones">
+                <a class="btn btn-sm" [routerLink]="['/socios', socio.id, 'editar']">Editar</a>
+                <button class="btn btn-sm btn-peligro" (click)="eliminar(socio)">Eliminar</button>
+              </div>
+            </div>
+          </article>
+        } @empty {
+          <div class="vacio-box">
+            <div class="vacio-icono">👥</div>
+            <h3>Sin socios</h3>
+            <p>No se encontraron socios registrados que coincidan con la búsqueda.</p>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- ==================== VISTA 2: EN TABLA DETALLADA ==================== -->
+    @if (vista() === 'tabla') {
+      <div class="tarjeta tabla-contenedor anim-fade">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 150px;">Documento</th>
+              <th>Lector / Socio</th>
+              <th>Datos de Contacto</th>
+              <th>Fecha Registro</th>
+              <th>Membresía</th>
+              <th style="text-align: right;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (socio of sociosFiltrados(); track socio.id) {
+              <tr>
+                <td>
+                  <span class="documento-badge">
+                    🪪 {{ socio.documento }}
+                  </span>
+                </td>
+                <td>
+                  <div class="socio-avatar-grupo">
+                    <div class="socio-avatar">
+                      {{ socio.nombre.charAt(0) }}
+                    </div>
+                    <div>
+                      <strong class="socio-nombre">{{ socio.apellido }}, {{ socio.nombre }}</strong>
+                      <span class="secundario">ID: #{{ socio.id }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="contacto-linea">
+                    <span>📧 {{ socio.email ?? 'Sin correo' }}</span>
+                  </div>
+                  @if (socio.telefono) {
+                    <span class="secundario">📞 {{ socio.telefono }}</span>
+                  }
+                </td>
+                <td>
+                  <span style="font-size: 0.9rem; color: var(--text-secondary);">
+                    📅 {{ socio.fechaRegistro | fecha }}
+                  </span>
+                </td>
+                <td>
+                  @if (socio.activo) {
+                    <span class="badge badge-verde">✓ Activo</span>
+                  } @else {
+                    <span class="badge badge-gris">Inactivo</span>
+                  }
+                </td>
+                <td class="acciones">
+                  <a class="btn btn-sm" [routerLink]="['/socios', socio.id, 'editar']">Editar</a>
+                  <button class="btn btn-sm btn-peligro" (click)="eliminar(socio)">Eliminar</button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="vacio">No se encontraron socios registrados que coincidan con la búsqueda.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+
+  }
+</div>

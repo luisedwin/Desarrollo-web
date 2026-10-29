@@ -1,0 +1,71 @@
+<div class="catalogo-wrapper anim-fade" style="max-width: 680px; margin: 0 auto;">
+  <div class="catalogo-hero" style="border: none; margin-bottom: 8px;">
+    <div>
+      <div class="hero-tag">NUEVA TRANSACCIÓN</div>
+      <h1>Registrar Préstamo</h1>
+      <p class="catalogo-sub">
+        Formaliza la entrega temporal de una obra física a un socio lector acreditado.
+      </p>
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="alerta-error">
+      <span>{{ error() }}</span>
+    </div>
+  }
+
+  <form class="tarjeta formulario anim-fade" [formGroup]="form" (ngSubmit)="guardar()" style="max-width: none;">
+    <label>
+      Socio Lector Receptor *
+      <select formControlName="socioId" [class.invalido]="invalido('socioId')">
+        <option [ngValue]="null" disabled>Selecciona un lector habilitado…</option>
+        @for (socio of socios(); track socio.id) {
+          <option [ngValue]="socio.id">{{ socio.apellido }}, {{ socio.nombre }} (DNI: {{ socio.documento }})</option>
+        }
+      </select>
+      @if (invalido('socioId')) {
+        <small>Debes seleccionar al socio solicitante.</small>
+      } @else {
+        <small class="ayuda">Mostrando exclusivamente lectores con membresía activa.</small>
+      }
+    </label>
+
+    <label>
+      Ejemplar Físico a Prestar *
+      <select formControlName="ejemplarId" [class.invalido]="invalido('ejemplarId')">
+        <option [ngValue]="null" disabled>
+          {{ ejemplares().length ? 'Selecciona una copia disponible…' : 'No existen ejemplares disponibles en este momento' }}
+        </option>
+        @for (ejemplar of ejemplares(); track ejemplar.id) {
+          <option [ngValue]="ejemplar.id">🏷️ {{ ejemplar.codigo }} — "{{ ejemplar.libro.titulo }}"</option>
+        }
+      </select>
+      @if (invalido('ejemplarId')) {
+        <small>Debes seleccionar la copia física a entregar.</small>
+      } @else {
+        <small class="ayuda">Solo se muestran los ejemplares en estado DISPONIBLE.</small>
+      }
+    </label>
+
+    <label>
+      Fecha Límite Prevista de Devolución *
+      <input
+        type="date"
+        formControlName="fechaDevolucionPrevista"
+        [min]="hoy"
+        [class.invalido]="invalido('fechaDevolucionPrevista')"
+      />
+      @if (invalido('fechaDevolucionPrevista')) {
+        <small>Indica la fecha máxima de entrega acordada.</small>
+      }
+    </label>
+
+    <div class="botones" style="margin-top: 16px;">
+      <a routerLink="/prestamos" class="btn">Cancelar</a>
+      <button type="submit" class="btn btn-primario" [disabled]="guardando()">
+        {{ guardando() ? 'Registrando salida…' : 'Confirmar Préstamo' }}
+      </button>
+    </div>
+  </form>
+</div>
