@@ -1,10 +1,14 @@
-import { Component, OnInit, inject, input, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, input, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { map } from 'rxjs';
 import { ESTADOS_EJEMPLAR, EjemplarRequest, EstadoEjemplar } from '../../models/ejemplar';
 import { Libro } from '../../models/libro';
 import { EjemplarService } from '../../services/ejemplar.service';
 import { LibroService } from '../../services/libro.service';
+import { ToastService } from '../../services/toast.service';
+import { obtenerTemaPortada } from '../../shared/book-theme';
 
 @Component({
   selector: 'app-ejemplar-form',
@@ -16,10 +20,12 @@ export class EjemplarForm implements OnInit {
   private readonly libroService = inject(LibroService);
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
+  private readonly toast = inject(ToastService);
 
   readonly id = input<string>();
+  // Query param opcional: /ejemplares/nuevo?libroId=1
+  readonly libroId = input<string>();
 
-  // "Prestado" no se elige a mano: lo ponen los préstamos
   protected readonly estados = ESTADOS_EJEMPLAR.filter((e) => e.valor !== 'PRESTADO');
   protected readonly libros = signal<Libro[]>([]);
   protected readonly prestado = signal(false);
@@ -33,12 +39,32 @@ export class EjemplarForm implements OnInit {
     ubicacion: ['', Validators.maxLength(100)]
   });
 
+  protected readonly vistaPrevia = toSignal(
+    this.form.valueChanges.pipe(map(() => this.form.getRawValue())),
+    { initialValue: this.form.getRawValue() }
+  );
+
+  protected readonly libroSeleccionado = computed(() => {
+    const id = this.vistaPrevia().libroId;
+    return this.libros().find((l) => l.id === id) ?? null;
+  });
+
+  protected readonly colorPortada = computed(() =>
+    obtenerTemaPortada(this.libroSeleccionado()?.id ?? 0).fondo
+  );
+
   get esEdicion(): boolean {
     return !!this.id();
   }
 
   ngOnInit(): void {
-    this.libroService.listar().subscribe((libros) => this.libros.set(libros));
+    this.libroService.listar().subscribe((libros) => {
+      this.libros.set(libros);
+      const qLibroId = this.libroId();
+      if (!this.id() && qLibroId && !this.form.controls.libroId.value) {
+        this.form.controls.libroId.setValue(+qLibroId);
+      }
+    });
 
     const id = this.id();
     if (id) {
@@ -60,6 +86,10 @@ export class EjemplarForm implements OnInit {
     }
   }
 
+  protected textoEstado(estado: EstadoEjemplar): string {
+    return ESTADOS_EJEMPLAR.find((e) => e.valor === estado)?.texto ?? estado;
+  }
+
   protected guardar(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -79,7 +109,13 @@ export class EjemplarForm implements OnInit {
     const peticion = id ? this.ejemplarService.actualizar(+id, datos) : this.ejemplarService.crear(datos);
 
     peticion.subscribe({
-      next: () => this.router.navigate(['/ejemplares']),
+      next: () => {
+        this.toast.exito(
+          this.esEdicion ? 'Ejemplar actualizado' : 'Ejemplar registrado',
+          `La copia ${datos.codigo} se guardó en el inventario.`
+        );
+        this.router.navigate(['/ejemplares']);
+      },
       error: (err) => {
         this.guardando.set(false);
         this.error.set(typeof err.error === 'string' ? err.error : 'No se pudo guardar el ejemplar.');

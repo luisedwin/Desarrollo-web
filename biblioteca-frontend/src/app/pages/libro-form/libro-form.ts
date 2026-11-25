@@ -1,8 +1,12 @@
-import { Component, OnInit, inject, input, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, input, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { map } from 'rxjs';
 import { Libro } from '../../models/libro';
 import { LibroService } from '../../services/libro.service';
+import { ToastService } from '../../services/toast.service';
+import { obtenerTemaPortada } from '../../shared/book-theme';
 
 @Component({
   selector: 'app-libro-form',
@@ -13,8 +17,8 @@ export class LibroForm implements OnInit {
   private readonly libroService = inject(LibroService);
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
+  private readonly toast = inject(ToastService);
 
-  // Viene del parámetro :id de la ruta (gracias a withComponentInputBinding)
   readonly id = input<string>();
 
   protected readonly guardando = signal(false);
@@ -27,6 +31,15 @@ export class LibroForm implements OnInit {
     isbn: ['', [Validators.pattern(/^[0-9-]{10,17}$/)]],
     anioPublicacion: [null as number | null, [Validators.min(0), Validators.max(this.anioActual)]]
   });
+
+  protected readonly vistaPrevia = toSignal(
+    this.form.valueChanges.pipe(map(() => this.form.getRawValue())),
+    { initialValue: this.form.getRawValue() }
+  );
+
+  protected readonly temaPreview = computed(() =>
+    obtenerTemaPortada(this.id() ? +this.id()! : this.vistaPrevia().titulo || 'Athenaeum')
+  );
 
   get esEdicion(): boolean {
     return !!this.id();
@@ -55,7 +68,13 @@ export class LibroForm implements OnInit {
     const peticion = id ? this.libroService.actualizar(+id, libro) : this.libroService.crear(libro);
 
     peticion.subscribe({
-      next: () => this.router.navigate(['/libros']),
+      next: () => {
+        this.toast.exito(
+          this.esEdicion ? 'Obra actualizada' : 'Obra registrada',
+          `"${libro.titulo}" se guardó correctamente en el catálogo.`
+        );
+        this.router.navigate(['/libros']);
+      },
       error: (err) => {
         this.guardando.set(false);
         this.error.set(typeof err.error === 'string' ? err.error : 'No se pudo guardar el libro.');

@@ -1,0 +1,246 @@
+.registro-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 190px);
+  padding: 12px 0;
+}
+
+.registro-shell {
+  display: grid;
+  grid-template-columns: 0.9fr 1.25fr;
+  width: 100%;
+  max-width: 1080px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: var(--shadow-xl);
+}
+
+.registro-aside {
+  position: relative;
+  background: linear-gradient(155deg, #101625 0%, #090c14 58%, #0e1320 100%);
+  padding: 42px 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 28px;
+  color: #f5f7fb;
+  overflow: hidden;
+  border-right: 1px solid var(--border-subtle);
+}
+
+.aside-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  pointer-events: none;
+}
+
+.orb-1 {
+  width: 240px;
+  height: 240px;
+  top: -70px;
+  left: -60px;
+  background: rgba(234, 179, 73, 0.2);
+}
+
+.orb-2 {
+  width: 240px;
+  height: 240px;
+  bottom: -80px;
+  right: -60px;
+  background: rgba(79, 125, 243, 0.2);
+}
+
+.aside-top,
+.aside-perks,
+.aside-footer {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-badge-alt {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(234, 179, 73, 0.13);
+  border: 1px solid rgba(234, 179, 73, 0.28);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: #f6c86a;
+  margin-bottom: 16px;
+}
+
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #f6c86a;
+}
+
+.aside-top h2 {
+  color: #ffffff;
+  font-size: 2rem;
+  line-height: 1.15;
+  margin-bottom: 12px;
+}
+
+.aside-top p {
+  color: #9aa5b8;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.aside-perks {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.perk-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  padding: 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.perk-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(234, 179, 73, 0.14);
+  color: #f6c86a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.perk-card strong {
+  display: block;
+  color: #ffffff;
+  font-size: 0.87rem;
+  margin-bottom: 2px;
+}
+
+.perk-card span {
+  display: block;
+  color: #9aa5b8;
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.aside-footer {
+  font-size: 0.78rem;
+  color: #f6c86a;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  opacity: 0.85;
+}
+
+.registro-card {
+  padding: 40px 42px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.registro-header {
+  margin-bottom: 24px;
+}
+
+.card-eyebrow {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  color: var(--accent-gold);
+  margin-bottom: 6px;
+}
+
+.registro-header h1 {
+  font-size: 1.9rem;
+  margin-bottom: 6px;
+  line-height: 1.15;
+}
+
+.registro-header p {
+  font-size: 0.91rem;
+  color: var(--text-secondary);
+}
+
+.strength-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.strength-bars {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+  flex: 1;
+}
+
+.strength-bars span {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--bg-surface);
+  transition: background-color 0.2s ease;
+}
+
+.strength-bars.nivel-1 span.on { background: var(--accent-danger); }
+.strength-bars.nivel-2 span.on { background: var(--accent-warning); }
+.strength-bars.nivel-3 span.on { background: var(--accent-info); }
+.strength-bars.nivel-4 span.on { background: var(--accent-success); }
+
+.strength-text {
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.strength-text.nivel-1 { color: var(--accent-danger); }
+.strength-text.nivel-2 { color: var(--accent-warning); }
+.strength-text.nivel-3 { color: var(--accent-info); }
+.strength-text.nivel-4 { color: var(--accent-success); }
+
+.registro-footer {
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-subtle);
+  text-align: center;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+.registro-footer a {
+  color: var(--accent-gold);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.registro-footer a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 920px) {
+  .registro-shell {
+    grid-template-columns: 1fr;
+    max-width: 600px;
+  }
+  .registro-aside {
+    display: none;
+  }
+  .registro-card {
+    padding: 30px 22px;
+  }
+}

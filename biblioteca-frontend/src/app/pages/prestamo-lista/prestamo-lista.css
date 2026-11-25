@@ -1,53 +1,59 @@
-.toolbar-prestamos {
+.toolbar-tabs {
+  padding-top: 12px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.prestamo-card {
+  padding-left: 26px;
+  overflow: hidden;
+}
+
+.prestamo-card.prestamo-vencido {
+  border-color: rgba(244, 63, 94, 0.32);
+}
+
+.prestamo-strip {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+}
+
+.prestamo-obra {
+  font-size: 1.15rem;
+  line-height: 1.25;
+}
+
+.prestamo-tabla-obra {
+  font-family: var(--font-serif);
+  font-size: 0.98rem;
+  color: var(--text-primary);
+}
+
+.socio-box {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  flex-wrap: wrap;
-  background: var(--bg-card);
+  gap: 11px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
-  padding: 16px 20px;
-  border-radius: 14px;
-  box-shadow: var(--shadow-sm);
-}
-
-.switch-filtro {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-  user-select: none;
-}
-
-.switch-label {
-  font-size: 0.92rem;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.contador-prestamos {
-  font-size: 0.88rem;
-  color: var(--text-secondary);
-}
-
-.contador-prestamos strong {
-  color: var(--text-primary);
 }
 
 .socio-columna {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 11px;
 }
 
 .socio-avatar-sm {
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent-gold) 0%, #b45309 100%);
-  color: #0b0f17;
+  color: #ffffff;
   font-weight: 800;
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -55,13 +61,50 @@
 }
 
 .socio-titulo {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  display: block;
+}
+
+.fechas-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.fecha-dato {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 8px 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.fecha-dato span {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.fecha-dato strong {
+  font-family: var(--font-mono);
+  font-size: 0.83rem;
   color: var(--text-primary);
 }
 
 .fecha-item {
-  font-size: 0.9rem;
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
   color: var(--text-secondary);
-  display: inline-block;
   white-space: nowrap;
+}
+
+.plazo-texto-tabla {
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: var(--text-secondary);
 }

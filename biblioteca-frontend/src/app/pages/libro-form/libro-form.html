@@ -1,65 +1,123 @@
-<div class="catalogo-wrapper anim-fade" style="max-width: 680px; margin: 0 auto;">
-  <div class="catalogo-hero" style="border: none; margin-bottom: 8px;">
-    <div>
-      <div class="hero-tag">{{ esEdicion ? 'MODIFICAR REGISTRO' : 'NUEVA INCORPORACIÓN' }}</div>
+<div class="form-page anim-fade">
+  <a routerLink="/libros" class="breadcrumb-link">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+      <polyline points="15 18 9 12 15 6"></polyline>
+    </svg>
+    <span>Volver al Catálogo</span>
+  </a>
+
+  <section class="page-hero">
+    <div class="page-hero-texto">
+      <div class="hero-tag">{{ esEdicion ? 'EDICIÓN DE CATÁLOGO' : 'NUEVA INCORPORACIÓN' }}</div>
       <h1>{{ esEdicion ? 'Editar Obra Literaria' : 'Registrar Nuevo Libro' }}</h1>
       <p class="catalogo-sub">
-        Completa los metadatos bibliográficos de la obra para el catálogo digital.
+        Completa los metadatos bibliográficos de la obra. La portada editorial se actualiza automáticamente en tiempo real.
       </p>
     </div>
-  </div>
+  </section>
 
   @if (error()) {
     <div class="alerta-error">
-      <span>{{ error() }}</span>
+      <div class="alerta-error-izq">
+        <span>{{ error() }}</span>
+      </div>
     </div>
   }
 
-  <form class="tarjeta formulario anim-fade" [formGroup]="form" (ngSubmit)="guardar()" style="max-width: none;">
-    <label>
-      Título de la Obra *
-      <input formControlName="titulo" placeholder="Ej. El Principito, Cien Años de Soledad…" [class.invalido]="invalido('titulo')" />
-      @if (invalido('titulo')) {
-        <small>El título es obligatorio.</small>
-      }
-    </label>
-
-    <label>
-      Autor Principal *
-      <input formControlName="autor" placeholder="Ej. Antoine de Saint-Exupéry" [class.invalido]="invalido('autor')" />
-      @if (invalido('autor')) {
-        <small>El autor es obligatorio.</small>
-      }
-    </label>
-
-    <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px;">
+  <div class="form-split">
+    <form class="tarjeta formulario" [formGroup]="form" (ngSubmit)="guardar()">
       <label>
-        Código ISBN
-        <input formControlName="isbn" placeholder="Ej. 978-0132350884" [class.invalido]="invalido('isbn')" />
-        @if (invalido('isbn')) {
-          <small>Usa solo números y guiones (10 a 17 caracteres).</small>
+        <span>Título de la Obra <span class="label-req">*</span></span>
+        <input formControlName="titulo" placeholder="Ej. Cien Años de Soledad, El Principito…" [class.invalido]="invalido('titulo')" />
+        @if (invalido('titulo')) {
+          <small>El título es obligatorio.</small>
         }
       </label>
 
       <label>
-        Año de Publicación
-        <input
-          type="number"
-          formControlName="anioPublicacion"
-          placeholder="Ej. 1943"
-          [class.invalido]="invalido('anioPublicacion')"
-        />
-        @if (invalido('anioPublicacion')) {
-          <small>Ingresa un año entre 0 y {{ anioActual }}.</small>
+        <span>Autor Principal <span class="label-req">*</span></span>
+        <input formControlName="autor" placeholder="Ej. Gabriel García Márquez" [class.invalido]="invalido('autor')" />
+        @if (invalido('autor')) {
+          <small>El autor es obligatorio.</small>
         }
       </label>
-    </div>
 
-    <div class="botones" style="margin-top: 16px;">
-      <a routerLink="/libros" class="btn">Cancelar</a>
-      <button type="submit" class="btn btn-primario" [disabled]="guardando()">
-        {{ guardando() ? 'Guardando cambios…' : (esEdicion ? 'Actualizar Libro' : 'Registrar Libro') }}
-      </button>
-    </div>
-  </form>
+      <div class="form-grid-asym">
+        <label>
+          <span>Código ISBN</span>
+          <input formControlName="isbn" placeholder="Ej. 978-0307474728" [class.invalido]="invalido('isbn')" />
+          @if (invalido('isbn')) {
+            <small>Usa solo números y guiones (10 a 17 caracteres).</small>
+          } @else {
+            <small class="ayuda">Identificador internacional único (opcional).</small>
+          }
+        </label>
+
+        <label>
+          <span>Año de Publicación</span>
+          <input
+            type="number"
+            formControlName="anioPublicacion"
+            placeholder="Ej. 1967"
+            [class.invalido]="invalido('anioPublicacion')"
+          />
+          @if (invalido('anioPublicacion')) {
+            <small>Ingresa un año entre 0 y {{ anioActual }}.</small>
+          }
+        </label>
+      </div>
+
+      <div class="botones">
+        <a routerLink="/libros" class="btn">Cancelar</a>
+        <button type="submit" class="btn btn-dorado" [disabled]="guardando()">
+          {{ guardando() ? 'Guardando obra…' : (esEdicion ? 'Actualizar Obra' : 'Registrar Obra') }}
+        </button>
+      </div>
+    </form>
+
+    <!-- Vista Previa en Vivo de Portada 3D -->
+    <aside class="preview-panel" aria-label="Vista previa de portada">
+      <div class="preview-label">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+        <span>VISTA PREVIA EN ESTANTERÍA</span>
+      </div>
+
+      @let preview = vistaPrevia();
+      @let tema = temaPreview();
+      <div
+        class="book-jacket"
+        style="border-radius: 14px; height: 240px; box-shadow: var(--shadow-lg);"
+        [style.background]="tema.fondo"
+        [style.--jacket-accent]="tema.acento"
+        [style.--jacket-border]="tema.borde"
+        [style.--jacket-pattern]="tema.patron"
+      >
+        <div class="book-spine"></div>
+        <div class="book-jacket-top">
+          <div class="book-emblem">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+            </svg>
+          </div>
+          <span class="book-year-pill">{{ preview.anioPublicacion || 'S/F' }}</span>
+        </div>
+        <div class="book-jacket-bottom">
+          <span class="book-jacket-divider"></span>
+          <h2 class="book-jacket-title">{{ preview.titulo.trim() || 'Título de la Obra' }}</h2>
+          <span class="book-jacket-author">{{ preview.autor.trim() || 'Nombre del Autor' }}</span>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 0.82rem; color: var(--text-secondary);">
+        <span>Encuadernación: <strong style="color: var(--text-primary);">{{ tema.nombre }}</strong></span>
+        @if (preview.isbn.trim()) {
+          <code class="id-tag">{{ preview.isbn }}</code>
+        }
+      </div>
+    </aside>
+  </div>
 </div>

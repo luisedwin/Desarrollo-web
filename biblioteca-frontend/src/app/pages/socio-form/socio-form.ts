@@ -1,8 +1,12 @@
-import { Component, OnInit, inject, input, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, input, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { map } from 'rxjs';
 import { Socio } from '../../models/socio';
 import { SocioService } from '../../services/socio.service';
+import { ToastService } from '../../services/toast.service';
+import { obtenerGradienteAvatar, obtenerIniciales } from '../../shared/book-theme';
 
 @Component({
   selector: 'app-socio-form',
@@ -13,8 +17,8 @@ export class SocioForm implements OnInit {
   private readonly socioService = inject(SocioService);
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
+  private readonly toast = inject(ToastService);
 
-  // Viene del parámetro :id de la ruta
   readonly id = input<string>();
 
   protected readonly guardando = signal(false);
@@ -29,6 +33,19 @@ export class SocioForm implements OnInit {
     activo: [true]
   });
 
+  protected readonly vistaPrevia = toSignal(
+    this.form.valueChanges.pipe(map(() => this.form.getRawValue())),
+    { initialValue: this.form.getRawValue() }
+  );
+
+  protected readonly inicialesPreview = computed(() =>
+    obtenerIniciales(this.vistaPrevia().nombre || 'A', this.vistaPrevia().apellido)
+  );
+
+  protected readonly avatarPreview = computed(() =>
+    obtenerGradienteAvatar(this.vistaPrevia().documento || this.vistaPrevia().nombre || '1')
+  );
+
   get esEdicion(): boolean {
     return !!this.id();
   }
@@ -38,7 +55,11 @@ export class SocioForm implements OnInit {
     if (id) {
       this.socioService.obtener(+id).subscribe({
         next: (socio) =>
-          this.form.patchValue({ ...socio, email: socio.email ?? '', telefono: socio.telefono ?? '' }),
+          this.form.patchValue({
+            ...socio,
+            email: socio.email ?? '',
+            telefono: socio.telefono ?? ''
+          }),
         error: () => this.error.set('No se encontró el socio.')
       });
     }
@@ -62,7 +83,13 @@ export class SocioForm implements OnInit {
     const peticion = id ? this.socioService.actualizar(+id, socio) : this.socioService.crear(socio);
 
     peticion.subscribe({
-      next: () => this.router.navigate(['/socios']),
+      next: () => {
+        this.toast.exito(
+          this.esEdicion ? 'Socio actualizado' : 'Socio registrado',
+          `${socio.nombre} ${socio.apellido} fue guardado en el directorio.`
+        );
+        this.router.navigate(['/socios']);
+      },
       error: (err) => {
         this.guardando.set(false);
         this.error.set(

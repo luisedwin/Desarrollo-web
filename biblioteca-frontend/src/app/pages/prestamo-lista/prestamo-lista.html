@@ -1,270 +1,370 @@
 <div class="catalogo-wrapper anim-fade">
-  <div class="catalogo-hero">
-    <div>
-      <div class="hero-tag">CIRCULACIÓN BIBLIOTECARIA</div>
+
+  <!-- Hero Editorial -->
+  <section class="page-hero">
+    <div class="page-hero-texto">
+      <div class="hero-tag">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+          <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+          <path d="M8 2v4"></path>
+          <path d="M16 2v4"></path>
+          <path d="M3 10h18"></path>
+        </svg>
+        <span>CIRCULACIÓN BIBLIOTECARIA</span>
+      </div>
       <h1>Gestión de Préstamos</h1>
       <p class="catalogo-sub">
-        Control y seguimiento de préstamos a socios, fechas límite de entrega y registro de devoluciones.
+        Control integral de préstamos a lectores, monitoreo de fechas límite de entrega y registro inmediato de devoluciones.
       </p>
     </div>
-    <div>
-      <a routerLink="/prestamos/nuevo" class="btn btn-primario btn-nuevo">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+
+    <div class="page-hero-acciones">
+      <a routerLink="/prestamos/nuevo" class="btn btn-dorado btn-nuevo">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <line x1="12" y1="5" x2="12" y2="19"></line>
           <line x1="5" y1="12" x2="19" y2="12"></line>
         </svg>
-        <span>+ Registrar Nuevo Préstamo</span>
+        <span>Registrar Préstamo</span>
       </a>
     </div>
-  </div>
+  </section>
 
-  <!-- Métricas en Tarjetas Horizontales Separadas -->
-  <div class="metricas-grid">
+  <!-- Métricas -->
+  <section class="metricas-grid">
     <div class="metrica-card">
-      <div class="metrica-icono">📋</div>
+      <div class="metrica-icono icono-gold">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+          <rect width="8" height="4" x="8" y="2" rx="1"></rect>
+        </svg>
+      </div>
       <div class="metrica-datos">
         <span class="metrica-valor">{{ totalPrestamos() }}</span>
-        <span class="metrica-label">Total en Consulta</span>
+        <span class="metrica-label">Historial Total</span>
       </div>
     </div>
+
     <div class="metrica-card">
-      <div class="metrica-icono" style="color: var(--accent-info);">📖</div>
+      <div class="metrica-icono icono-blue">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+      </div>
       <div class="metrica-datos">
         <span class="metrica-valor">{{ totalActivos() }}</span>
-        <span class="metrica-label">Préstamos Activos</span>
+        <span class="metrica-label">Préstamos en Curso</span>
       </div>
     </div>
+
     <div class="metrica-card">
-      <div class="metrica-icono" [style.color]="totalVencidos() > 0 ? 'var(--accent-danger)' : 'var(--text-muted)'">
-        {{ totalVencidos() > 0 ? '⚠️' : '✓' }}
+      <div class="metrica-icono" [class.icono-red]="totalVencidos() > 0" [class.icono-green]="totalVencidos() === 0">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          @if (totalVencidos() > 0) {
+            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          } @else {
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          }
+        </svg>
       </div>
       <div class="metrica-datos">
-        <span class="metrica-valor" [style.color]="totalVencidos() > 0 ? 'var(--accent-danger)' : 'inherit'">
+        <span class="metrica-valor" [style.color]="totalVencidos() > 0 ? 'var(--accent-danger)' : null">
           {{ totalVencidos() }}
         </span>
         <span class="metrica-label">Plazos Vencidos</span>
       </div>
     </div>
+
     <div class="metrica-card">
-      <div class="metrica-icono" style="color: var(--accent-success);">📦</div>
+      <div class="metrica-icono icono-green">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
       <div class="metrica-datos">
         <span class="metrica-valor">{{ totalDevueltos() }}</span>
         <span class="metrica-label">Devoluciones Hechas</span>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- Toolbar de Préstamos con Switch y Selector de Vista -->
-  <div class="toolbar-prestamos">
-    <label class="switch-filtro">
-      <input type="checkbox" [checked]="soloActivos()" (change)="cambiarFiltro($event)" />
-      <span class="switch-label">Filtrar exclusivamente préstamos pendientes de devolución</span>
-    </label>
-
-    <!-- Selector de Vista Tarjetas / Tabla -->
-    <div class="vista-selector">
-      <button
-        type="button"
-        class="btn-vista"
-        [class.activo]="vista() === 'tarjetas'"
-        (click)="cambiarVista('tarjetas')"
-        title="Vista en Tarjetas de Préstamos"
-      >
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect width="7" height="7" x="3" y="3" rx="1"></rect>
-          <rect width="7" height="7" x="14" y="3" rx="1"></rect>
-          <rect width="7" height="7" x="14" y="14" rx="1"></rect>
-          <rect width="7" height="7" x="3" y="14" rx="1"></rect>
+  <!-- Toolbar -->
+  <section class="toolbar-panel">
+    <div class="toolbar-row">
+      <div class="buscador-caja">
+        <svg class="icono-lupa" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
-        <span>Tarjetas</span>
-      </button>
+        <input
+          class="buscador-input"
+          type="search"
+          placeholder="Buscar por socio, DNI, libro o código de ejemplar…"
+          [value]="busqueda()"
+          (input)="buscar($event)"
+        />
+        @if (busqueda()) {
+          <button type="button" class="btn-limpiar" (click)="limpiarBusqueda()" aria-label="Limpiar búsqueda">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        }
+      </div>
 
-      <button
-        type="button"
-        class="btn-vista"
-        [class.activo]="vista() === 'tabla'"
-        (click)="cambiarVista('tabla')"
-        title="Vista en Tabla"
-      >
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="8" y1="6" x2="21" y2="6"></line>
-          <line x1="8" y1="12" x2="21" y2="12"></line>
-          <line x1="8" y1="18" x2="21" y2="18"></line>
-          <line x1="3" y1="6" x2="3.01" y2="6"></line>
-          <line x1="3" y1="12" x2="3.01" y2="12"></line>
-          <line x1="3" y1="18" x2="3.01" y2="18"></line>
-        </svg>
-        <span>Tabla</span>
-      </button>
+      <div class="vista-selector">
+        <button type="button" class="btn-vista" [class.activo]="vista() === 'tarjetas'" (click)="cambiarVista('tarjetas')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect width="7" height="7" x="3" y="3" rx="1"></rect>
+            <rect width="7" height="7" x="14" y="3" rx="1"></rect>
+            <rect width="7" height="7" x="14" y="14" rx="1"></rect>
+            <rect width="7" height="7" x="3" y="14" rx="1"></rect>
+          </svg>
+          <span>Tarjetas</span>
+        </button>
+
+        <button type="button" class="btn-vista" [class.activo]="vista() === 'tabla'" (click)="cambiarVista('tabla')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="8" y1="6" x2="21" y2="6"></line>
+            <line x1="8" y1="12" x2="21" y2="12"></line>
+            <line x1="8" y1="18" x2="21" y2="18"></line>
+            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+          </svg>
+          <span>Tabla</span>
+        </button>
+      </div>
     </div>
-  </div>
+
+    <div class="toolbar-row toolbar-tabs">
+      <div class="pildoras-filtro">
+        <button type="button" class="btn-pildora" [class.activo]="filtro() === 'ACTIVOS'" (click)="cambiarFiltro('ACTIVOS')">
+          Pendientes <span class="pildora-count">{{ totalActivos() }}</span>
+        </button>
+        <button type="button" class="btn-pildora" [class.activo]="filtro() === 'VENCIDOS'" (click)="cambiarFiltro('VENCIDOS')">
+          Vencidos <span class="pildora-count">{{ totalVencidos() }}</span>
+        </button>
+        <button type="button" class="btn-pildora" [class.activo]="filtro() === 'DEVUELTOS'" (click)="cambiarFiltro('DEVUELTOS')">
+          Devueltos <span class="pildora-count">{{ totalDevueltos() }}</span>
+        </button>
+        <button type="button" class="btn-pildora" [class.activo]="filtro() === 'TODOS'" (click)="cambiarFiltro('TODOS')">
+          Todos <span class="pildora-count">{{ totalPrestamos() }}</span>
+        </button>
+      </div>
+    </div>
+  </section>
 
   @if (error()) {
     <div class="alerta-error">
-      <span>{{ error() }}</span>
+      <div class="alerta-error-izq">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <span>{{ error() }}</span>
+      </div>
+      <button type="button" class="btn btn-sm" (click)="cargar()">Reintentar</button>
     </div>
   }
 
   @if (cargando()) {
-    <div class="cargando-contenedor">
-      <div class="spinner"></div>
-      <p>Cargando registros de préstamos…</p>
+    <div class="skeleton-grid">
+      @for (i of [1, 2, 3]; track i) {
+        <div class="skeleton-card" style="height: 245px;">
+          <div class="skeleton-block" style="height: 24px; width: 50%;"></div>
+          <div class="skeleton-block" style="height: 20px; width: 80%;"></div>
+          <div class="skeleton-block" style="height: 52px; width: 100%;"></div>
+          <div class="skeleton-block" style="height: 30px; width: 100%; margin-top: auto;"></div>
+        </div>
+      }
     </div>
   } @else {
 
-    <!-- ==================== VISTA 1: EN TARJETAS INDIVIDUALES ==================== -->
+    <!-- ==================== VISTA 1: TARJETAS ==================== -->
     @if (vista() === 'tarjetas') {
       <div class="tarjetas-grid anim-fade">
-        @for (prestamo of prestamos(); track prestamo.id) {
-          <article class="dato-card">
+        @for (prestamo of prestamosFiltrados(); track prestamo.id) {
+          <article class="dato-card prestamo-card" [class.prestamo-vencido]="esVencido(prestamo)">
+            <span class="prestamo-strip" [style.background]="colorLibro(prestamo)"></span>
+
             <div class="dato-card-header">
-              <span class="codigo-badge" style="font-size: 0.8rem; padding: 3px 8px;">
-                Copia: {{ prestamo.ejemplar.codigo }}
-              </span>
+              <span class="codigo-badge">{{ prestamo.ejemplar.codigo }}</span>
               @if (prestamo.fechaDevolucionReal) {
-                <span class="badge badge-gris">Devuelto</span>
-              } @else if (prestamo.vencido) {
-                <span class="badge badge-rojo">⚠️ Vencido</span>
+                <span class="badge badge-verde"><span class="badge-dot-sm"></span>Devuelto</span>
+              } @else if (esVencido(prestamo)) {
+                <span class="badge badge-rojo"><span class="badge-dot-sm"></span>Vencido</span>
               } @else {
-                <span class="badge badge-azul">En Curso</span>
+                <span class="badge badge-azul"><span class="badge-dot-sm"></span>En Curso</span>
               }
             </div>
 
             <div class="dato-card-body">
-              <h3 class="libro-tabla-titulo" style="font-size: 1.15rem; margin-bottom: 4px;">
-                {{ prestamo.ejemplar.libro.titulo }}
-              </h3>
+              <h3 class="prestamo-obra">{{ prestamo.ejemplar.libro.titulo }}</h3>
 
-              <div class="socio-columna" style="background: var(--bg-surface); border: 1px solid var(--border-subtle); padding: 10px 12px; border-radius: 10px;">
-                <div class="socio-avatar-sm">
-                  {{ prestamo.socio.nombre.charAt(0) }}
+              <div class="socio-box">
+                <div class="socio-avatar-sm" [style.background]="gradienteAvatar(prestamo)">
+                  {{ iniciales(prestamo) }}
                 </div>
-                <div>
-                  <strong class="socio-titulo" style="font-size: 0.92rem;">{{ prestamo.socio.nombre }} {{ prestamo.socio.apellido }}</strong>
-                  <span class="secundario" style="margin: 0; font-size: 0.8rem;">DNI: {{ prestamo.socio.documento }}</span>
+                <div style="min-width: 0;">
+                  <strong class="socio-titulo">{{ prestamo.socio.nombre }} {{ prestamo.socio.apellido }}</strong>
+                  <span class="secundario" style="margin: 0;">DNI {{ prestamo.socio.documento }}</span>
                 </div>
               </div>
 
-              <div style="display: flex; flex-direction: column; gap: 4px; font-size: 0.85rem; margin-top: 4px;">
-                <div style="color: var(--text-secondary);">
-                  📅 Retiro: <strong>{{ prestamo.fechaPrestamo | fecha }}</strong>
+              <div class="fechas-grid">
+                <div class="fecha-dato">
+                  <span>Retiro</span>
+                  <strong>{{ prestamo.fechaPrestamo | fecha }}</strong>
                 </div>
-                <div [style.color]="prestamo.vencido && !prestamo.fechaDevolucionReal ? 'var(--accent-danger)' : 'var(--text-secondary)'">
-                  ⏰ Entrega prevista: <strong [style.color]="prestamo.vencido && !prestamo.fechaDevolucionReal ? 'var(--accent-danger)' : 'var(--text-primary)'">{{ prestamo.fechaDevolucionPrevista | fecha }}</strong>
+                <div class="fecha-dato">
+                  <span>Fecha límite</span>
+                  <strong [style.color]="esVencido(prestamo) ? 'var(--accent-danger)' : null">
+                    {{ prestamo.fechaDevolucionPrevista | fecha }}
+                  </strong>
                 </div>
-                @if (prestamo.fechaDevolucionReal) {
-                  <div style="color: var(--accent-success);">
-                    ✓ Devuelto: <strong>{{ prestamo.fechaDevolucionReal | fecha }}</strong>
-                  </div>
-                }
+              </div>
+
+              <div class="plazo-box">
+                <div class="plazo-meta">
+                  <span [style.color]="esVencido(prestamo) ? 'var(--accent-danger)' : 'var(--text-secondary)'">
+                    {{ textoPlazo(prestamo) }}
+                  </span>
+                  @if (prestamo.fechaDevolucionReal) {
+                    <span style="color: var(--accent-success);">
+                      {{ prestamo.fechaDevolucionReal | fecha }}
+                    </span>
+                  }
+                </div>
+                <div class="plazo-track">
+                  <div class="plazo-fill" [class]="claseProgreso(prestamo)" [style.width.%]="progreso(prestamo)"></div>
+                </div>
               </div>
             </div>
 
             <div class="dato-card-footer">
-              <span class="secundario" style="margin: 0;">Préstamo #{{ prestamo.id }}</span>
-              <div class="acciones">
-                @if (!prestamo.fechaDevolucionReal) {
-                  <button class="btn btn-sm btn-dorado" [disabled]="devolviendo() === prestamo.id" (click)="devolver(prestamo)">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                      <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
-                    <span>{{ devolviendo() === prestamo.id ? 'Registrando…' : 'Devolver' }}</span>
-                  </button>
-                }
-              </div>
+              <span class="id-tag">Préstamo #{{ prestamo.id }}</span>
+              @if (!prestamo.fechaDevolucionReal) {
+                <button
+                  type="button"
+                  class="btn btn-sm btn-dorado"
+                  [disabled]="devolviendo() === prestamo.id"
+                  (click)="devolver(prestamo)"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  <span>{{ devolviendo() === prestamo.id ? 'Registrando…' : 'Devolver' }}</span>
+                </button>
+              }
             </div>
           </article>
         } @empty {
           <div class="vacio-box">
-            <div class="vacio-icono">📦</div>
-            <h3>Sin préstamos</h3>
-            <p>{{ soloActivos() ? 'No hay préstamos activos pendientes de devolución.' : 'No existen préstamos registrados todavía.' }}</p>
+            <div class="vacio-icono-wrap">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+                <path d="M8 2v4"></path>
+                <path d="M16 2v4"></path>
+                <path d="M3 10h18"></path>
+              </svg>
+            </div>
+            <h3>Sin préstamos en esta vista</h3>
+            <p>No hay registros que coincidan con el filtro o término de búsqueda seleccionado.</p>
           </div>
         }
       </div>
     }
 
-    <!-- ==================== VISTA 2: EN TABLA DETALLADA ==================== -->
+    <!-- ==================== VISTA 2: TABLA ==================== -->
     @if (vista() === 'tabla') {
-      <div class="tarjeta tabla-contenedor anim-fade">
+      <div class="tabla-contenedor anim-fade">
         <table>
           <thead>
             <tr>
               <th>Socio Lector</th>
-              <th>Obra / Ejemplar</th>
-              <th>Fecha Préstamo</th>
-              <th>Límite Previsto</th>
-              <th>Devuelto el</th>
+              <th>Obra / Copia</th>
+              <th>Retiro</th>
+              <th>Límite</th>
+              <th>Plazo / Devolución</th>
               <th>Estado</th>
               <th style="text-align: right;">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            @for (prestamo of prestamos(); track prestamo.id) {
+            @for (prestamo of prestamosFiltrados(); track prestamo.id) {
               <tr>
                 <td>
                   <div class="socio-columna">
-                    <div class="socio-avatar-sm">
-                      {{ prestamo.socio.nombre.charAt(0) }}
+                    <div class="socio-avatar-sm" [style.background]="gradienteAvatar(prestamo)">
+                      {{ iniciales(prestamo) }}
                     </div>
                     <div>
                       <strong class="socio-titulo">{{ prestamo.socio.nombre }} {{ prestamo.socio.apellido }}</strong>
-                      <span class="secundario">DNI: {{ prestamo.socio.documento }}</span>
+                      <span class="secundario">DNI {{ prestamo.socio.documento }}</span>
                     </div>
                   </div>
                 </td>
                 <td>
-                  <strong class="libro-tabla-titulo">{{ prestamo.ejemplar.libro.titulo }}</strong>
-                  <span class="secundario">Copia: <code class="codigo-badge" style="font-size: 0.78rem; padding: 2px 6px;">{{ prestamo.ejemplar.codigo }}</code></span>
+                  <strong class="prestamo-tabla-obra">{{ prestamo.ejemplar.libro.titulo }}</strong>
+                  <span class="secundario">Copia <code class="font-mono">{{ prestamo.ejemplar.codigo }}</code></span>
                 </td>
-                <td>
-                  <span class="fecha-item">📅 {{ prestamo.fechaPrestamo | fecha }}</span>
-                </td>
+                <td><span class="fecha-item">{{ prestamo.fechaPrestamo | fecha }}</span></td>
                 <td>
                   <span
                     class="fecha-item"
-                    [style.color]="prestamo.vencido && !prestamo.fechaDevolucionReal ? 'var(--accent-danger)' : 'var(--text-primary)'"
-                    [style.font-weight]="prestamo.vencido && !prestamo.fechaDevolucionReal ? '700' : '500'"
+                    [style.color]="esVencido(prestamo) ? 'var(--accent-danger)' : 'var(--text-primary)'"
+                    [style.font-weight]="esVencido(prestamo) ? '700' : '600'"
                   >
-                    ⏰ {{ prestamo.fechaDevolucionPrevista | fecha }}
-                  </span>
-                </td>
-                <td>
-                  <span class="fecha-item" style="color: var(--text-secondary);">
-                    {{ prestamo.fechaDevolucionReal ? '✓ ' + (prestamo.fechaDevolucionReal | fecha) : '—' }}
+                    {{ prestamo.fechaDevolucionPrevista | fecha }}
                   </span>
                 </td>
                 <td>
                   @if (prestamo.fechaDevolucionReal) {
-                    <span class="badge badge-gris">Devuelto</span>
-                  } @else if (prestamo.vencido) {
-                    <span class="badge badge-rojo">⚠️ Vencido</span>
+                    <span class="fecha-item" style="color: var(--accent-success);">
+                      {{ prestamo.fechaDevolucionReal | fecha }}
+                    </span>
                   } @else {
-                    <span class="badge badge-azul">En Curso</span>
+                    <span class="plazo-texto-tabla" [style.color]="esVencido(prestamo) ? 'var(--accent-danger)' : null">
+                      {{ textoPlazo(prestamo) }}
+                    </span>
+                  }
+                </td>
+                <td>
+                  @if (prestamo.fechaDevolucionReal) {
+                    <span class="badge badge-verde"><span class="badge-dot-sm"></span>Devuelto</span>
+                  } @else if (esVencido(prestamo)) {
+                    <span class="badge badge-rojo"><span class="badge-dot-sm"></span>Vencido</span>
+                  } @else {
+                    <span class="badge badge-azul"><span class="badge-dot-sm"></span>En Curso</span>
                   }
                 </td>
                 <td class="acciones">
                   @if (!prestamo.fechaDevolucionReal) {
-                    <button class="btn btn-sm btn-dorado" [disabled]="devolviendo() === prestamo.id" (click)="devolver(prestamo)">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <polyline points="20 6 9 17 4 12"></polyline>
-                      </svg>
-                      <span>{{ devolviendo() === prestamo.id ? 'Registrando…' : 'Devolver' }}</span>
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-dorado"
+                      [disabled]="devolviendo() === prestamo.id"
+                      (click)="devolver(prestamo)"
+                    >
+                      {{ devolviendo() === prestamo.id ? 'Registrando…' : 'Devolver' }}
                     </button>
                   }
                 </td>
               </tr>
             } @empty {
               <tr>
-                <td colspan="7" class="vacio">
-                  {{ soloActivos() ? 'No hay préstamos activos pendientes de devolución.' : 'No existen préstamos registrados todavía.' }}
-                </td>
+                <td colspan="7" class="vacio">No hay préstamos registrados para el filtro actual.</td>
               </tr>
             }
           </tbody>
         </table>
       </div>
     }
-
   }
 </div>

@@ -1,0 +1,338 @@
+<div class="catalogo-wrapper anim-fade">
+
+  <!-- Hero Ejecutivo -->
+  <section class="page-hero">
+    <div class="page-hero-texto">
+      <div class="hero-tag">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+          <rect width="7" height="9" x="3" y="3" rx="1"></rect>
+          <rect width="7" height="5" x="14" y="3" rx="1"></rect>
+          <rect width="7" height="9" x="14" y="12" rx="1"></rect>
+          <rect width="7" height="5" x="3" y="16" rx="1"></rect>
+        </svg>
+        <span>CENTRO DE CONTROL · {{ fechaHoyTexto.toUpperCase() }}</span>
+      </div>
+      <h1>Panel Ejecutivo</h1>
+      <p class="catalogo-sub">
+        Visión consolidada del acervo bibliográfico, estado de inventario físico, comunidad de lectores y circulación activa.
+      </p>
+    </div>
+
+    <div class="page-hero-acciones">
+      <a routerLink="/prestamos/nuevo" class="btn btn-dorado">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        <span>Nuevo Préstamo</span>
+      </a>
+      <a routerLink="/libros/nuevo" class="btn">
+        <span>+ Libro</span>
+      </a>
+      <a routerLink="/socios/nuevo" class="btn">
+        <span>+ Socio</span>
+      </a>
+    </div>
+  </section>
+
+  @if (error()) {
+    <div class="alerta-error">
+      <div class="alerta-error-izq">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <span>{{ error() }}</span>
+      </div>
+      <button type="button" class="btn btn-sm" (click)="cargar()">Reintentar</button>
+    </div>
+  }
+
+  @if (cargando()) {
+    <div class="metricas-grid">
+      @for (i of [1, 2, 3, 4]; track i) {
+        <div class="skeleton-card" style="height: 102px;">
+          <div class="skeleton-block" style="height: 22px; width: 55%;"></div>
+          <div class="skeleton-block" style="height: 14px; width: 75%;"></div>
+        </div>
+      }
+    </div>
+  } @else {
+
+    <!-- KPIs Ejecutivos -->
+    <section class="metricas-grid">
+      <a routerLink="/libros" class="metrica-card metrica-link">
+        <div class="metrica-icono icono-gold">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
+            <path d="M6.5 17H20"></path>
+          </svg>
+        </div>
+        <div class="metrica-datos">
+          <span class="metrica-valor">{{ totalLibros() }}</span>
+          <span class="metrica-label">Obras en Catálogo</span>
+          <span class="metrica-sub">{{ totalAutores() }} autores registrados</span>
+        </div>
+      </a>
+
+      <a routerLink="/ejemplares" class="metrica-card metrica-link">
+        <div class="metrica-icono icono-green">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"></path>
+          </svg>
+        </div>
+        <div class="metrica-datos">
+          <span class="metrica-valor">{{ disponibles() }} <span class="valor-sec">/ {{ totalEjemplares() }}</span></span>
+          <span class="metrica-label">Ejemplares Disponibles</span>
+          <span class="metrica-sub">{{ tasaDisponibilidad() }}% listo para sala</span>
+        </div>
+      </a>
+
+      <a routerLink="/socios" class="metrica-card metrica-link">
+        <div class="metrica-icono icono-blue">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+        </div>
+        <div class="metrica-datos">
+          <span class="metrica-valor">{{ sociosActivos() }} <span class="valor-sec">/ {{ totalSocios() }}</span></span>
+          <span class="metrica-label">Socios Habilitados</span>
+          <span class="metrica-sub">Membresías vigentes</span>
+        </div>
+      </a>
+
+      <a routerLink="/prestamos" class="metrica-card metrica-link">
+        <div class="metrica-icono" [class.icono-red]="prestamosVencidos().length > 0" [class.icono-violet]="prestamosVencidos().length === 0">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+            <path d="M8 2v4"></path>
+            <path d="M16 2v4"></path>
+            <path d="M3 10h18"></path>
+          </svg>
+        </div>
+        <div class="metrica-datos">
+          <span class="metrica-valor" [style.color]="prestamosVencidos().length > 0 ? 'var(--accent-danger)' : null">
+            {{ prestamosActivos().length }}
+          </span>
+          <span class="metrica-label">Préstamos Activos</span>
+          <span class="metrica-sub">
+            @if (prestamosVencidos().length > 0) {
+              {{ prestamosVencidos().length }} vencido{{ prestamosVencidos().length === 1 ? '' : 's' }} requieren atención
+            } @else {
+              {{ prestamosDevueltos().length }} devoluciones completadas
+            }
+          </span>
+        </div>
+      </a>
+    </section>
+
+    <!-- Grid Principal del Dashboard -->
+    <div class="panel-grid">
+
+      <!-- Columna Izquierda: Salud del Inventario + Atención Prioritaria -->
+      <div class="panel-col">
+        <section class="tarjeta panel-card">
+          <div class="panel-card-header">
+            <div>
+              <h2>Distribución del Inventario</h2>
+              <p>Estado operativo de los {{ totalEjemplares() }} ejemplares físicos registrados.</p>
+            </div>
+            <a routerLink="/ejemplares" class="panel-ver-mas">Ver inventario →</a>
+          </div>
+
+          <div class="dist-bar-wrap">
+            <div class="dist-bar">
+              @if (pctDisponible() > 0) {
+                <div class="dist-seg seg-verde" [style.width.%]="pctDisponible()" [title]="'Disponibles: ' + disponibles()"></div>
+              }
+              @if (pctPrestado() > 0) {
+                <div class="dist-seg seg-azul" [style.width.%]="pctPrestado()" [title]="'Prestados: ' + prestadosEj()"></div>
+              }
+              @if (pctMantenimiento() > 0) {
+                <div class="dist-seg seg-amarillo" [style.width.%]="pctMantenimiento()" [title]="'Mantenimiento: ' + mantenimiento()"></div>
+              }
+              @if (pctBaja() > 0) {
+                <div class="dist-seg seg-gris" [style.width.%]="pctBaja()" [title]="'De baja: ' + baja()"></div>
+              }
+            </div>
+
+            <div class="dist-legend">
+              <div class="legend-item">
+                <span class="legend-dot dot-verde"></span>
+                <span>Disponibles</span>
+                <strong>{{ disponibles() }} ({{ pctDisponible() }}%)</strong>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot dot-azul"></span>
+                <span>En préstamo</span>
+                <strong>{{ prestadosEj() }} ({{ pctPrestado() }}%)</strong>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot dot-amarillo"></span>
+                <span>Mantenimiento</span>
+                <strong>{{ mantenimiento() }} ({{ pctMantenimiento() }}%)</strong>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot dot-gris"></span>
+                <span>De baja</span>
+                <strong>{{ baja() }} ({{ pctBaja() }}%)</strong>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="tarjeta panel-card">
+          <div class="panel-card-header">
+            <div>
+              <h2>Próximas Devoluciones y Vencimientos</h2>
+              <p>Préstamos activos ordenados por fecha límite más cercana.</p>
+            </div>
+            <a routerLink="/prestamos" class="panel-ver-mas">Gestionar todos →</a>
+          </div>
+
+          <div class="atencion-lista">
+            @for (p of prestamosAtencion(); track p.id) {
+              <div class="atencion-item" [class.urgente]="esUrgente(p)">
+                <div class="atencion-izq">
+                  <div class="mini-avatar" [style.background]="gradienteAvatar(p.socio.id)">
+                    {{ iniciales(p.socio.nombre, p.socio.apellido) }}
+                  </div>
+                  <div class="atencion-texto">
+                    <strong>{{ p.ejemplar.libro.titulo }}</strong>
+                    <span>{{ p.socio.nombre }} {{ p.socio.apellido }} · Copia <code>{{ p.ejemplar.codigo }}</code></span>
+                  </div>
+                </div>
+                <div class="atencion-der">
+                  <div class="atencion-fecha">
+                    <span class="badge" [class]="p.vencido ? 'badge-rojo' : esUrgente(p) ? 'badge-amarillo' : 'badge-azul'">
+                      {{ plazo(p) }}
+                    </span>
+                    <small>Límite: {{ p.fechaDevolucionPrevista | fecha }}</small>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-dorado"
+                    [disabled]="devolviendo() === p.id"
+                    (click)="devolver(p)"
+                  >
+                    {{ devolviendo() === p.id ? '…' : 'Devolver' }}
+                  </button>
+                </div>
+              </div>
+            } @empty {
+              <div class="panel-empty">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                <span>No hay préstamos pendientes de devolución. Toda la circulación está al día.</span>
+              </div>
+            }
+          </div>
+        </section>
+      </div>
+
+      <!-- Columna Derecha: Accesos Rápidos & Obras Destacadas -->
+      <div class="panel-col">
+        <section class="tarjeta panel-card">
+          <div class="panel-card-header">
+            <div>
+              <h2>Acciones Rápidas</h2>
+              <p>Flujos frecuentes de administración diaria.</p>
+            </div>
+          </div>
+
+          <div class="quick-actions-grid">
+            <a routerLink="/prestamos/nuevo" class="qa-tile">
+              <div class="qa-icon icono-gold">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+                  <path d="M8 2v4"></path>
+                  <path d="M16 2v4"></path>
+                  <path d="M3 10h18"></path>
+                </svg>
+              </div>
+              <div>
+                <strong>Nuevo Préstamo</strong>
+                <span>Entregar ejemplar</span>
+              </div>
+            </a>
+
+            <a routerLink="/libros/nuevo" class="qa-tile">
+              <div class="qa-icon icono-blue">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
+                  <path d="M12 7v6"></path>
+                  <path d="M9 10h6"></path>
+                </svg>
+              </div>
+              <div>
+                <strong>Registrar Libro</strong>
+                <span>Añadir al catálogo</span>
+              </div>
+            </a>
+
+            <a routerLink="/ejemplares/nuevo" class="qa-tile">
+              <div class="qa-icon icono-green">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"></path>
+                </svg>
+              </div>
+              <div>
+                <strong>Nueva Copia</strong>
+                <span>Etiquetar estantería</span>
+              </div>
+            </a>
+
+            <a routerLink="/socios/nuevo" class="qa-tile">
+              <div class="qa-icon icono-violet">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <line x1="19" y1="8" x2="19" y2="14"></line>
+                  <line x1="22" y1="11" x2="16" y2="11"></line>
+                </svg>
+              </div>
+              <div>
+                <strong>Registrar Socio</strong>
+                <span>Alta de lector</span>
+              </div>
+            </a>
+          </div>
+        </section>
+
+        <section class="tarjeta panel-card">
+          <div class="panel-card-header">
+            <div>
+              <h2>Obras con Mayor Fondo</h2>
+              <p>Títulos con más copias físicas inventariadas.</p>
+            </div>
+            <a routerLink="/libros" class="panel-ver-mas">Catálogo →</a>
+          </div>
+
+          <div class="destacados-lista">
+            @for (item of librosDestacados(); track item.libro.id) {
+              <a routerLink="/ejemplares" [queryParams]="{ libroId: item.libro.id }" class="destacado-row">
+                <span class="destacado-lomo" [style.background]="item.tema.fondo"></span>
+                <div class="destacado-info">
+                  <strong>{{ item.libro.titulo }}</strong>
+                  <span>{{ item.libro.autor }}</span>
+                </div>
+                <span class="badge" [class]="item.disp > 0 ? 'badge-verde' : 'badge-gris'">
+                  {{ item.disp }}/{{ item.total }} disp.
+                </span>
+              </a>
+            } @empty {
+              <div class="panel-empty">Aún no hay libros registrados.</div>
+            }
+          </div>
+        </section>
+      </div>
+
+    </div>
+  }
+</div>

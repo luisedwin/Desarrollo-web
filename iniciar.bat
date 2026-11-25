@@ -42,6 +42,25 @@ if not exist "biblioteca-frontend\node_modules\" (
 )
 
 :: -------------------------------------------------------------------------------
+:: 2.5 VERIFICAR JAVA_HOME (corrige rutas rotas automáticamente)
+:: -------------------------------------------------------------------------------
+if exist "%JAVA_HOME%\bin\java.exe" goto :java_ok
+for /f "delims=" %%J in ('where java 2^>nul') do (
+    for %%D in ("%%~dpJ..") do set "JAVA_HOME=%%~fD"
+    goto :java_ok
+)
+:java_ok
+if exist "%JAVA_HOME%\bin\java.exe" (
+    echo       [OK] Java detectado en: %JAVA_HOME%
+) else (
+    echo       [ERROR] No se encontro Java JDK 17+. Instala JDK 17 o superior para iniciar el Backend.
+    echo.
+    pause
+    exit /b 1
+)
+echo.
+
+:: -------------------------------------------------------------------------------
 :: 3. ARRANCAR BACKEND (Spring Boot en puerto 8080)
 :: -------------------------------------------------------------------------------
 echo [2/3] Levantando Backend (Spring Boot en puerto 8080)...
@@ -58,15 +77,15 @@ echo       - Ventana del Frontend iniciada en segundo plano.
 echo.
 
 :: -------------------------------------------------------------------------------
-:: 5. ESPERAR A QUE EL SERVIDOR FRONTEND ESTE LISTO Y ABRIR NAVEGADOR
+:: 5. ESPERAR A QUE BACKEND Y FRONTEND ESTEN LISTOS Y ABRIR NAVEGADOR
 :: -------------------------------------------------------------------------------
 echo ===============================================================================
-echo Esperando a que el Frontend termine de compilar y responder...
-echo (Esto suele tomar entre 5 y 15 segundos)
+echo Esperando a que el Backend (:8080) y Frontend (:4200) esten listos...
+echo (Esto suele tomar entre 8 y 20 segundos)
 echo ===============================================================================
 
-for /L %%i in (1,1,35) do (
-    curl.exe -s -o nul http://localhost:4200 && goto :abrir_web
+for /L %%i in (1,1,45) do (
+    curl.exe -s -o nul http://localhost:8080 && curl.exe -s -o nul http://localhost:4200 && goto :abrir_web
     <nul set /p="."
     timeout /t 2 /nobreak >nul
 )
@@ -74,7 +93,7 @@ for /L %%i in (1,1,35) do (
 :abrir_web
 echo.
 echo.
-echo [*] Servidor Frontend listo. Abriendo navegador...
+echo [*] Servidores listos. Abriendo navegador...
 start http://localhost:4200
 
 echo.

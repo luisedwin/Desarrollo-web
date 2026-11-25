@@ -1,75 +1,132 @@
-<div class="catalogo-wrapper anim-fade" style="max-width: 680px; margin: 0 auto;">
-  <div class="catalogo-hero" style="border: none; margin-bottom: 8px;">
-    <div>
-      <div class="hero-tag">{{ esEdicion ? 'ACTUALIZAR FICHA' : 'NUEVA MEMBRESÍA' }}</div>
+<div class="form-page anim-fade">
+  <a routerLink="/socios" class="breadcrumb-link">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+      <polyline points="15 18 9 12 15 6"></polyline>
+    </svg>
+    <span>Volver a Socios</span>
+  </a>
+
+  <section class="page-hero">
+    <div class="page-hero-texto">
+      <div class="hero-tag">{{ esEdicion ? 'ACTUALIZAR FICHA DE MIEMBRO' : 'NUEVA MEMBRESÍA' }}</div>
       <h1>{{ esEdicion ? 'Editar Socio Lector' : 'Registrar Nuevo Socio' }}</h1>
       <p class="catalogo-sub">
-        Ficha personal de identificación, datos de contacto y estado de habilitación.
+        Gestiona los datos personales, documento de identidad y habilitación del carnet digital del lector.
       </p>
     </div>
-  </div>
+  </section>
 
   @if (error()) {
     <div class="alerta-error">
-      <span>{{ error() }}</span>
+      <div class="alerta-error-izq">
+        <span>{{ error() }}</span>
+      </div>
     </div>
   }
 
-  <form class="tarjeta formulario anim-fade" [formGroup]="form" (ngSubmit)="guardar()" style="max-width: none;">
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+  <div class="form-split">
+    <form class="tarjeta formulario" [formGroup]="form" (ngSubmit)="guardar()">
+      <div class="form-grid-2">
+        <label>
+          <span>Nombre <span class="label-req">*</span></span>
+          <input formControlName="nombre" placeholder="Ej. Ana, Luis…" [class.invalido]="invalido('nombre')" />
+          @if (invalido('nombre')) {
+            <small>El nombre es obligatorio.</small>
+          }
+        </label>
+
+        <label>
+          <span>Apellido <span class="label-req">*</span></span>
+          <input formControlName="apellido" placeholder="Ej. Torres, Ramos…" [class.invalido]="invalido('apellido')" />
+          @if (invalido('apellido')) {
+            <small>El apellido es obligatorio.</small>
+          }
+        </label>
+      </div>
+
       <label>
-        Nombre *
-        <input formControlName="nombre" placeholder="Ej. Ana, Luis…" [class.invalido]="invalido('nombre')" />
-        @if (invalido('nombre')) {
-          <small>El nombre es obligatorio.</small>
+        <span>Documento de Identidad (DNI / Cédula) <span class="label-req">*</span></span>
+        <input formControlName="documento" placeholder="Ej. 70123456" [class.invalido]="invalido('documento')" />
+        @if (invalido('documento')) {
+          <small>Ingresa un documento válido (6 a 20 caracteres alfanuméricos).</small>
         }
       </label>
 
-      <label>
-        Apellido *
-        <input formControlName="apellido" placeholder="Ej. Torres, Ramos…" [class.invalido]="invalido('apellido')" />
-        @if (invalido('apellido')) {
-          <small>El apellido es obligatorio.</small>
-        }
+      <div class="form-grid-asym">
+        <label>
+          <span>Correo Electrónico</span>
+          <input type="email" formControlName="email" placeholder="lector@correo.com" [class.invalido]="invalido('email')" />
+          @if (invalido('email')) {
+            <small>Ingresa un email válido.</small>
+          }
+        </label>
+
+        <label>
+          <span>Teléfono Móvil</span>
+          <input formControlName="telefono" placeholder="+51 987654321" [class.invalido]="invalido('telefono')" />
+          @if (invalido('telefono')) {
+            <small>Solo dígitos y caracteres válidos.</small>
+          }
+        </label>
+      </div>
+
+      <label class="check-card">
+        <input type="checkbox" formControlName="activo" />
+        <div class="check-card-texto">
+          <strong>Membresía Activa</strong>
+          <span>Habilitado para solicitar y retirar ejemplares en préstamo.</span>
+        </div>
       </label>
-    </div>
 
-    <label>
-      Documento Nacional de Identidad (DNI / Cédula) *
-      <input formControlName="documento" placeholder="Ej. 70123456" [class.invalido]="invalido('documento')" />
-      @if (invalido('documento')) {
-        <small>Ingresa un documento válido (6 a 20 caracteres numéricos/alfanuméricos).</small>
-      }
-    </label>
+      <div class="botones">
+        <a routerLink="/socios" class="btn">Cancelar</a>
+        <button type="submit" class="btn btn-dorado" [disabled]="guardando()">
+          {{ guardando() ? 'Guardando ficha…' : (esEdicion ? 'Actualizar Socio' : 'Registrar Socio') }}
+        </button>
+      </div>
+    </form>
 
-    <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px;">
-      <label>
-        Correo Electrónico
-        <input type="email" formControlName="email" placeholder="lector@correo.com" [class.invalido]="invalido('email')" />
-        @if (invalido('email')) {
-          <small>Ingresa un email válido.</small>
-        }
-      </label>
+    <!-- Vista Previa Carnet Digital de Lector -->
+    <aside class="preview-panel" aria-label="Vista previa de carnet">
+      <div class="preview-label">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <rect width="20" height="14" x="2" y="5" rx="2"></rect>
+          <line x1="2" y1="10" x2="22" y2="10"></line>
+        </svg>
+        <span>CARNET DIGITAL ATHENAEUM</span>
+      </div>
 
-      <label>
-        Teléfono Móvil
-        <input formControlName="telefono" placeholder="+51 987654321" [class.invalido]="invalido('telefono')" />
-        @if (invalido('telefono')) {
-          <small>Solo dígitos y caracteres válidos.</small>
-        }
-      </label>
-    </div>
+      @let p = vistaPrevia();
+      <div style="border-radius: 16px; padding: 22px; background: linear-gradient(145deg, #131b2e 0%, #0a0e18 100%); border: 1px solid rgba(234, 179, 73, 0.3); color: #f5f7fb; display: flex; flex-direction: column; gap: 18px; box-shadow: var(--shadow-lg);">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+          <span style="font-family: var(--font-serif); font-weight: 700; letter-spacing: 0.1em; font-size: 0.82rem; color: #f6c86a;">
+            ATHENAEUM
+          </span>
+          <span class="badge" [class]="p.activo ? 'badge-verde' : 'badge-gris'">
+            <span class="badge-dot-sm"></span>
+            {{ p.activo ? 'Activo' : 'Inactivo' }}
+          </span>
+        </div>
 
-    <label class="check" style="background: var(--bg-surface); border: 1px solid var(--border-subtle); padding: 12px 16px; border-radius: 9px; margin-top: 4px;">
-      <input type="checkbox" formControlName="activo" style="width: 17px; height: 17px; accent-color: var(--accent-primary);" />
-      <span><strong>Socio Activo</strong> (Habilitado para solicitar y retirar préstamos)</span>
-    </label>
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div style="width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; color: #ffffff; flex-shrink: 0;" [style.background]="avatarPreview()">
+            {{ inicialesPreview() }}
+          </div>
+          <div style="min-width: 0;">
+            <strong style="display: block; font-family: var(--font-serif); font-size: 1.15rem; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+              {{ (p.nombre.trim() || 'Nombre') + ' ' + (p.apellido.trim() || 'Apellido') }}
+            </strong>
+            <span style="font-family: var(--font-mono); font-size: 0.78rem; color: #9aa5b8;">
+              DNI {{ p.documento.trim() || '00000000' }}
+            </span>
+          </div>
+        </div>
 
-    <div class="botones" style="margin-top: 16px;">
-      <a routerLink="/socios" class="btn">Cancelar</a>
-      <button type="submit" class="btn btn-primario" [disabled]="guardando()">
-        {{ guardando() ? 'Guardando ficha…' : (esEdicion ? 'Actualizar Socio' : 'Registrar Socio') }}
-      </button>
-    </div>
-  </form>
+        <div style="padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; gap: 4px; font-size: 0.8rem; color: #9aa5b8;">
+          <span>{{ p.email.trim() || 'Sin correo asignado' }}</span>
+          <span>{{ p.telefono.trim() || 'Sin teléfono de contacto' }}</span>
+        </div>
+      </div>
+    </aside>
+  </div>
 </div>

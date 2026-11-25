@@ -8,17 +8,15 @@ export class ThemeService {
   readonly currentTheme = signal<Theme>(this.getInitialTheme());
 
   constructor() {
-    // Apply initial theme attribute to documentElement
     this.applyTheme(this.currentTheme());
 
-    // Watch signal changes
     effect(() => {
       const theme = this.currentTheme();
       this.applyTheme(theme);
       try {
         localStorage.setItem(this.STORAGE_KEY, theme);
       } catch {
-        // Fallback if localStorage is unavailable
+        // Fallback si localStorage no está disponible
       }
     });
   }
@@ -34,6 +32,10 @@ export class ThemeService {
   private applyTheme(theme: Theme): void {
     if (typeof document !== 'undefined') {
       document.documentElement.setAttribute('data-theme', theme);
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) {
+        meta.setAttribute('content', theme === 'dark' ? '#090b10' : '#f6f3ed');
+      }
     }
   }
 
@@ -47,7 +49,7 @@ export class ThemeService {
         return 'light';
       }
     } catch {
-      // Default to luxury dark mode
+      // Por defecto modo oscuro editorial
     }
     return 'dark';
   }

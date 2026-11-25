@@ -1,88 +1,114 @@
-.toolbar-socios {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  flex-wrap: wrap;
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  padding: 16px 20px;
-  border-radius: 14px;
-  box-shadow: var(--shadow-sm);
-}
-
-.pildoras-filtro {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  padding: 4px;
-  border-radius: 10px;
-}
-
-.btn-pildora {
-  background: transparent;
-  border: none;
-  color: var(--text-secondary);
-  font-size: 0.82rem;
-  font-weight: 600;
-  padding: 6px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-pildora:hover {
-  color: var(--text-primary);
-}
-
-.btn-pildora.activo {
-  background: var(--bg-card);
-  color: var(--text-primary);
-  box-shadow: var(--shadow-sm);
-}
-
-.documento-badge {
-  font-family: monospace;
-  font-size: 0.88rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  background: var(--bg-surface);
-  border: 1px solid var(--border-medium);
-  padding: 4px 10px;
-  border-radius: 7px;
-  display: inline-block;
-  box-shadow: var(--shadow-sm);
-}
-
 .socio-avatar-grupo {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 13px;
+  min-width: 0;
 }
 
 .socio-avatar {
-  width: 36px;
-  height: 36px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent-primary) 0%, #1e3a8a 100%);
   color: #ffffff;
-  font-weight: 700;
+  font-weight: 800;
   font-size: 0.9rem;
+  letter-spacing: 0.03em;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 10px var(--accent-primary-glow);
   flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.socio-avatar-sm {
+  width: 34px;
+  height: 34px;
+  font-size: 0.78rem;
+}
+
+.socio-identidad {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
 }
 
 .socio-nombre {
-  font-size: 0.96rem;
+  font-size: 1.08rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.socio-tabla-nombre {
+  font-size: 0.95rem;
   color: var(--text-primary);
 }
 
-.contacto-linea {
-  font-size: 0.9rem;
+.dni-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  font-family: var(--font-mono);
+  font-size: 0.77rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  padding: 3px 9px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.dni-copy:hover {
+  color: var(--accent-gold);
+  border-color: rgba(234, 179, 73, 0.35);
+  background: var(--accent-gold-soft);
+}
+
+.socio-detalles {
+  gap: 9px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+}
+
+.contacto-fila {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  min-width: 0;
+}
+
+.contacto-fila svg {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.contacto-link {
   color: var(--text-primary);
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.contacto-link:hover {
+  color: var(--accent-gold);
+  text-decoration: underline;
+}
+
+.contacto-vacio {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.contacto-tabla {
+  font-size: 0.88rem;
 }

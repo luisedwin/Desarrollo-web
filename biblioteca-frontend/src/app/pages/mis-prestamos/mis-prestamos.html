@@ -1,76 +1,249 @@
 <div class="catalogo-wrapper anim-fade">
-  <div class="catalogo-hero">
-    <div>
-      <div class="hero-tag">MI CUENTA DE LECTOR</div>
+
+  <!-- Hero Editorial -->
+  <section class="page-hero">
+    <div class="page-hero-texto">
+      <div class="hero-tag">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+        </svg>
+        <span>MI ESPACIO DE LECTURA</span>
+      </div>
       <h1>Mis Préstamos Literarios</h1>
       <p class="catalogo-sub">
-        Consulta el estado de los ejemplares que tienes en préstamo, sus fechas de vencimiento e historial de devoluciones.
+        Revisa los libros que tienes actualmente en préstamo, sus fechas de devolución e historial completo de lecturas.
       </p>
     </div>
-  </div>
+
+    <div class="page-hero-acciones">
+      <a routerLink="/libros" class="btn btn-dorado">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+        </svg>
+        <span>Explorar Catálogo</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Métricas del Lector -->
+  <section class="metricas-grid">
+    <div class="metrica-card">
+      <div class="metrica-icono icono-blue">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+        </svg>
+      </div>
+      <div class="metrica-datos">
+        <span class="metrica-valor">{{ activos() }}</span>
+        <span class="metrica-label">En Lectura Actual</span>
+      </div>
+    </div>
+
+    <div class="metrica-card">
+      <div class="metrica-icono" [class.icono-red]="vencidos() > 0" [class.icono-green]="vencidos() === 0">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+      </div>
+      <div class="metrica-datos">
+        <span class="metrica-valor" [style.color]="vencidos() > 0 ? 'var(--accent-danger)' : null">
+          {{ vencidos() }}
+        </span>
+        <span class="metrica-label">Plazos Vencidos</span>
+      </div>
+    </div>
+
+    <div class="metrica-card">
+      <div class="metrica-icono icono-gold">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+      </div>
+      <div class="metrica-datos">
+        <span class="metrica-valor">{{ devueltos() }}</span>
+        <span class="metrica-label">Lecturas Devueltas</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filtros y Vista -->
+  <section class="toolbar-panel">
+    <div class="toolbar-row">
+      <div class="pildoras-filtro">
+        <button type="button" class="btn-pildora" [class.activo]="filtro() === 'TODOS'" (click)="filtro.set('TODOS')">
+          Todos <span class="pildora-count">{{ prestamos().length }}</span>
+        </button>
+        <button type="button" class="btn-pildora" [class.activo]="filtro() === 'ACTIVOS'" (click)="filtro.set('ACTIVOS')">
+          En curso <span class="pildora-count">{{ activos() }}</span>
+        </button>
+        <button type="button" class="btn-pildora" [class.activo]="filtro() === 'HISTORIAL'" (click)="filtro.set('HISTORIAL')">
+          Historial <span class="pildora-count">{{ devueltos() }}</span>
+        </button>
+      </div>
+
+      <div class="vista-selector">
+        <button type="button" class="btn-vista" [class.activo]="vista() === 'tarjetas'" (click)="vista.set('tarjetas')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect width="7" height="7" x="3" y="3" rx="1"></rect>
+            <rect width="7" height="7" x="14" y="3" rx="1"></rect>
+            <rect width="7" height="7" x="14" y="14" rx="1"></rect>
+            <rect width="7" height="7" x="3" y="14" rx="1"></rect>
+          </svg>
+          <span>Tarjetas</span>
+        </button>
+        <button type="button" class="btn-vista" [class.activo]="vista() === 'tabla'" (click)="vista.set('tabla')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="8" y1="6" x2="21" y2="6"></line>
+            <line x1="8" y1="12" x2="21" y2="12"></line>
+            <line x1="8" y1="18" x2="21" y2="18"></line>
+            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+          </svg>
+          <span>Tabla</span>
+        </button>
+      </div>
+    </div>
+  </section>
 
   @if (error()) {
     <div class="alerta-error">
-      <span>{{ error() }}</span>
+      <div class="alerta-error-izq">
+        <span>{{ error() }}</span>
+      </div>
+      <button type="button" class="btn btn-sm" (click)="cargar()">Reintentar</button>
     </div>
   }
 
   @if (cargando()) {
-    <div class="cargando-contenedor">
-      <div class="spinner"></div>
-      <p>Cargando tus préstamos…</p>
+    <div class="skeleton-grid">
+      @for (i of [1, 2, 3]; track i) {
+        <div class="skeleton-card" style="height: 205px;">
+          <div class="skeleton-block" style="height: 24px; width: 45%;"></div>
+          <div class="skeleton-block" style="height: 20px; width: 80%;"></div>
+          <div class="skeleton-block" style="height: 44px; width: 100%; margin-top: auto;"></div>
+        </div>
+      }
     </div>
   } @else {
-    <div class="tarjeta tabla-contenedor anim-fade">
-      <table>
-        <thead>
-          <tr>
-            <th>Obra / Título</th>
-            <th>Fecha de Préstamo</th>
-            <th>Fecha Límite</th>
-            <th>Devuelto el</th>
-            <th>Estado Actual</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (prestamo of prestamos(); track prestamo.id) {
+    @if (vista() === 'tarjetas') {
+      <div class="tarjetas-grid anim-fade">
+        @for (prestamo of prestamosFiltrados(); track prestamo.id) {
+          <article class="dato-card mi-prestamo-card" [class.vencido-card]="esVencido(prestamo)">
+            <span class="mi-strip" [style.background]="colorLibro(prestamo)"></span>
+
+            <div class="dato-card-header">
+              <span class="codigo-badge">{{ prestamo.ejemplar.codigo }}</span>
+              @if (prestamo.fechaDevolucionReal) {
+                <span class="badge badge-verde"><span class="badge-dot-sm"></span>Devuelto</span>
+              } @else if (esVencido(prestamo)) {
+                <span class="badge badge-rojo"><span class="badge-dot-sm"></span>Vencido</span>
+              } @else {
+                <span class="badge badge-azul"><span class="badge-dot-sm"></span>En Curso</span>
+              }
+            </div>
+
+            <div class="dato-card-body">
+              <h3 class="mi-obra-titulo">{{ prestamo.ejemplar.libro.titulo }}</h3>
+              <p class="mi-obra-autor">{{ prestamo.ejemplar.libro.autor }}</p>
+
+              <div class="mi-fechas">
+                <div class="mi-fecha-box">
+                  <span>Retirado</span>
+                  <strong>{{ prestamo.fechaPrestamo | fecha }}</strong>
+                </div>
+                <div class="mi-fecha-box">
+                  <span>Fecha límite</span>
+                  <strong [style.color]="esVencido(prestamo) ? 'var(--accent-danger)' : null">
+                    {{ prestamo.fechaDevolucionPrevista | fecha }}
+                  </strong>
+                </div>
+              </div>
+
+              <div class="plazo-box">
+                <div class="plazo-meta">
+                  <span [style.color]="esVencido(prestamo) ? 'var(--accent-danger)' : 'var(--text-secondary)'">
+                    {{ plazo(prestamo) }}
+                  </span>
+                  @if (prestamo.fechaDevolucionReal) {
+                    <span style="color: var(--accent-success);">{{ prestamo.fechaDevolucionReal | fecha }}</span>
+                  }
+                </div>
+                <div class="plazo-track">
+                  <div class="plazo-fill" [class]="claseProgreso(prestamo)" [style.width.%]="progreso(prestamo)"></div>
+                </div>
+              </div>
+            </div>
+          </article>
+        } @empty {
+          <div class="vacio-box">
+            <div class="vacio-icono-wrap">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+            </div>
+            <h3>Tu estantería de préstamos está vacía</h3>
+            <p>Aún no tienes ejemplares registrados en esta categoría. Explora el catálogo para descubrir tu próxima lectura.</p>
+            <a routerLink="/libros" class="btn btn-sm btn-dorado">Explorar Catálogo</a>
+          </div>
+        }
+      </div>
+    }
+
+    @if (vista() === 'tabla') {
+      <div class="tabla-contenedor anim-fade">
+        <table>
+          <thead>
             <tr>
-              <td>
-                <strong class="libro-tabla-titulo">{{ prestamo.ejemplar.libro.titulo }}</strong>
-                <span class="secundario">Autor: {{ prestamo.ejemplar.libro.autor }} · Ejemplar: <code class="codigo-isbn">{{ prestamo.ejemplar.codigo }}</code></span>
-              </td>
-              <td>
-                <span style="font-size: 0.88rem; color: var(--text-secondary);">📅 {{ prestamo.fechaPrestamo | fecha }}</span>
-              </td>
-              <td>
-                <span style="font-size: 0.88rem; font-weight: 600;" [style.color]="prestamo.vencido && !prestamo.fechaDevolucionReal ? 'var(--accent-danger)' : 'var(--text-primary)'">
-                  ⏰ {{ prestamo.fechaDevolucionPrevista | fecha }}
-                </span>
-              </td>
-              <td>
-                <span style="font-size: 0.88rem; color: var(--text-secondary);">
-                  {{ prestamo.fechaDevolucionReal ? '✓ ' + (prestamo.fechaDevolucionReal | fecha) : '—' }}
-                </span>
-              </td>
-              <td>
-                @if (prestamo.fechaDevolucionReal) {
-                  <span class="badge badge-gris">Devuelto</span>
-                } @else if (prestamo.vencido) {
-                  <span class="badge badge-rojo">⚠️ Vencido</span>
-                } @else {
-                  <span class="badge badge-azul">En Curso</span>
-                }
-              </td>
+              <th>Obra / Ejemplar</th>
+              <th>Retiro</th>
+              <th>Fecha Límite</th>
+              <th>Devuelto el</th>
+              <th>Estado</th>
             </tr>
-          } @empty {
-            <tr>
-              <td colspan="5" class="vacio">
-                No tienes préstamos registrados en este momento. Puedes solicitar ejemplares disponibles en el mostrador.
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            @for (prestamo of prestamosFiltrados(); track prestamo.id) {
+              <tr>
+                <td>
+                  <strong class="mi-tabla-titulo">{{ prestamo.ejemplar.libro.titulo }}</strong>
+                  <span class="secundario">{{ prestamo.ejemplar.libro.autor }} · Copia <code class="font-mono">{{ prestamo.ejemplar.codigo }}</code></span>
+                </td>
+                <td><span class="font-mono" style="font-size: 0.85rem;">{{ prestamo.fechaPrestamo | fecha }}</span></td>
+                <td>
+                  <span class="font-mono" style="font-size: 0.85rem; font-weight: 600;" [style.color]="esVencido(prestamo) ? 'var(--accent-danger)' : null">
+                    {{ prestamo.fechaDevolucionPrevista | fecha }}
+                  </span>
+                </td>
+                <td>
+                  <span class="font-mono" style="font-size: 0.85rem; color: var(--text-secondary);">
+                    {{ prestamo.fechaDevolucionReal ? (prestamo.fechaDevolucionReal | fecha) : '—' }}
+                  </span>
+                </td>
+                <td>
+                  @if (prestamo.fechaDevolucionReal) {
+                    <span class="badge badge-verde"><span class="badge-dot-sm"></span>Devuelto</span>
+                  } @else if (esVencido(prestamo)) {
+                    <span class="badge badge-rojo"><span class="badge-dot-sm"></span>Vencido</span>
+                  } @else {
+                    <span class="badge badge-azul"><span class="badge-dot-sm"></span>{{ plazo(prestamo) }}</span>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="vacio">No tienes préstamos registrados en esta categoría.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
   }
 </div>

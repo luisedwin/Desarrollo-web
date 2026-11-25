@@ -3,8 +3,11 @@ import { RouterLink } from '@angular/router';
 import { ESTADOS_EJEMPLAR, Ejemplar, EstadoEjemplar } from '../../models/ejemplar';
 import { Libro } from '../../models/libro';
 import { AuthService } from '../../services/auth.service';
+import { ConfirmService } from '../../services/confirm.service';
 import { EjemplarService } from '../../services/ejemplar.service';
 import { LibroService } from '../../services/libro.service';
+import { ToastService } from '../../services/toast.service';
+import { obtenerTemaPortada } from '../../shared/book-theme';
 
 const CLASE_ESTADO: Record<EstadoEjemplar, string> = {
   DISPONIBLE: 'badge-verde',
@@ -22,6 +25,8 @@ const CLASE_ESTADO: Record<EstadoEjemplar, string> = {
 export class EjemplarLista implements OnInit {
   private readonly ejemplarService = inject(EjemplarService);
   private readonly libroService = inject(LibroService);
+  private readonly confirm = inject(ConfirmService);
+  private readonly toast = inject(ToastService);
 
   protected readonly esAdmin = inject(AuthService).esAdmin;
 
@@ -33,9 +38,22 @@ export class EjemplarLista implements OnInit {
   protected readonly libros = signal<Libro[]>([]);
   protected readonly cargando = signal(true);
   protected readonly error = signal<string | null>(null);
+  protected readonly busqueda = signal('');
   protected readonly filtroLibro = signal<number | null>(null);
   protected readonly filtroEstado = signal<EstadoEjemplar | null>(null);
   protected readonly vista = signal<'tarjetas' | 'tabla'>('tarjetas');
+
+  protected readonly ejemplaresFiltrados = computed(() => {
+    const texto = this.busqueda().trim().toLowerCase();
+    if (!texto) return this.ejemplares();
+    return this.ejemplares().filter(
+      (e) =>
+        e.codigo?.toLowerCase().includes(texto) ||
+        e.ubicacion?.toLowerCase().includes(texto) ||
+        e.libro?.titulo?.toLowerCase().includes(texto) ||
+        e.libro?.autor?.toLowerCase().includes(texto)
+    );
+  });
 
   protected readonly totalEjemplares = computed(() => this.ejemplares().length);
   protected readonly totalDisponibles = computed(
@@ -70,6 +88,14 @@ export class EjemplarLista implements OnInit {
     });
   }
 
+  protected buscar(evento: Event): void {
+    this.busqueda.set((evento.target as HTMLInputElement).value);
+  }
+
+  protected limpiarBusqueda(): void {
+    this.busqueda.set('');
+  }
+
   protected cambiarLibro(evento: Event): void {
     const valor = (evento.target as HTMLSelectElement).value;
     this.filtroLibro.set(valor ? +valor : null);
@@ -83,6 +109,7 @@ export class EjemplarLista implements OnInit {
   }
 
   protected limpiarFiltros(): void {
+    this.busqueda.set('');
     this.filtroLibro.set(null);
     this.filtroEstado.set(null);
     this.cargar();
@@ -100,12 +127,30 @@ export class EjemplarLista implements OnInit {
     return CLASE_ESTADO[estado];
   }
 
-  protected eliminar(ejemplar: Ejemplar): void {
-    if (!confirm(`¿Eliminar el ejemplar ${ejemplar.codigo}?`)) return;
+  protected colorLibro(libroId: number | undefined): string {
+    return obtenerTemaPortada(libroId).fondo;
+  }
+
+  protected async eliminar(ejemplar: Ejemplar): Promise<void> {
+    const aceptado = await this.confirm.preguntar({
+      titulo: 'Eliminar ejemplar físico',
+      mensaje: `¿Seguro que deseas retirar del inventario el ejemplar "${ejemplar.codigo}" de "${ejemplar.libro.titulo}"?`,
+      detalle: ejemplar.ubicacion ? `Ubicación: ${ejemplar.ubicacion}` : `Código: ${ejemplar.codigo}`,
+      textoConfirmar: 'Eliminar ejemplar',
+      variante: 'peligro'
+    });
+    if (!aceptado) return;
+
     this.ejemplarService.eliminar(ejemplar.id).subscribe({
-      next: () => this.ejemplares.update((lista) => lista.filter((e) => e.id !== ejemplar.id)),
-      error: () =>
-        this.error.set('No se puede eliminar: el ejemplar tiene préstamos registrados. Puedes darlo de baja.')
+      next: () => {
+        this.ejemplares.update((lista) => lista.filter((e) => e.id !== ejemplar.id));
+        this.toast.exito('Ejemplar eliminado', `La copia ${ejemplar.codigo} fue retirada del inventario.`);
+      },
+      error: () => {
+        const msg = 'No se puede eliminar: el ejemplar tiene préstamos registrados. Puedes cambiar su estado a "De baja".';
+        this.error.set(msg);
+        this.toast.error('No se pudo eliminar', msg);
+      }
     });
   }
 }

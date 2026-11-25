@@ -1,169 +1,339 @@
 <div class="catalogo-wrapper anim-fade">
 
-  <!-- Encabezado Principal y Métricas -->
-  <div class="catalogo-hero">
-    <div class="hero-texto">
-      <div class="hero-tag">COLECCIÓN PRINCIPAL</div>
+  <!-- Hero Editorial -->
+  <section class="page-hero">
+    <div class="page-hero-texto">
+      <div class="hero-tag">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+        </svg>
+        <span>HOLA, {{ primerNombre().toUpperCase() }} · COLECCIÓN SAN LORENZO</span>
+      </div>
       <h1>Catálogo Literario</h1>
       <p class="catalogo-sub">
-        Explora las obras de la biblioteca virtual, consulta ejemplares físicos y gestiona la disponibilidad en tiempo real.
+        Explora nuestra colección bibliográfica con disponibilidad física en tiempo real, ubicación por estantería y ficha detallada de cada obra.
       </p>
     </div>
 
-    @if (esAdmin()) {
-      <div class="hero-acciones">
-        <a routerLink="/libros/nuevo" class="btn btn-primario btn-nuevo">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+    <div class="page-hero-acciones">
+      @if (esAdmin()) {
+        <a routerLink="/panel" class="btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect width="7" height="9" x="3" y="3" rx="1"></rect>
+            <rect width="7" height="5" x="14" y="3" rx="1"></rect>
+            <rect width="7" height="9" x="14" y="12" rx="1"></rect>
+            <rect width="7" height="5" x="3" y="16" rx="1"></rect>
+          </svg>
+          <span>Resumen</span>
+        </a>
+        <a routerLink="/libros/nuevo" class="btn btn-dorado btn-nuevo">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <line x1="12" y1="5" x2="12" y2="19"></line>
             <line x1="5" y1="12" x2="19" y2="12"></line>
           </svg>
-          <span>Añadir Nuevo Libro</span>
+          <span>Añadir Obra</span>
         </a>
-      </div>
-    }
-  </div>
+      } @else {
+        <a routerLink="/mis-prestamos" class="btn btn-dorado">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+            <path d="M8 2v4"></path>
+            <path d="M16 2v4"></path>
+            <path d="M3 10h18"></path>
+          </svg>
+          <span>Mis Préstamos</span>
+        </a>
+      }
+    </div>
+  </section>
 
-  <!-- Barra de Métricas de la Biblioteca -->
-  <div class="metricas-grid">
+  <!-- Métricas del Catálogo -->
+  <section class="metricas-grid" aria-label="Estadísticas del catálogo">
     <div class="metrica-card">
-      <div class="metrica-icono">📚</div>
+      <div class="metrica-icono icono-gold">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
+          <path d="M6.5 17H20"></path>
+        </svg>
+      </div>
       <div class="metrica-datos">
         <span class="metrica-valor">{{ totalLibros() }}</span>
         <span class="metrica-label">Obras Registradas</span>
       </div>
     </div>
+
     <div class="metrica-card">
-      <div class="metrica-icono">🖋️</div>
+      <div class="metrica-icono icono-violet">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 19l7-7 3 3-7 7-3-3z"></path>
+          <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
+          <path d="M2 2l7.586 7.586"></path>
+          <circle cx="11" cy="11" r="2"></circle>
+        </svg>
+      </div>
       <div class="metrica-datos">
         <span class="metrica-valor">{{ totalAutores() }}</span>
         <span class="metrica-label">Autores Distintos</span>
       </div>
     </div>
+
     <div class="metrica-card">
-      <div class="metrica-icono">🏛️</div>
+      <div class="metrica-icono icono-green">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"></path>
+        </svg>
+      </div>
       <div class="metrica-datos">
-        <span class="metrica-valor">Activa</span>
-        <span class="metrica-label">Colección San Lorenzo</span>
+        <span class="metrica-valor">{{ totalDisponibles() }} <span class="valor-de">/ {{ totalEjemplares() }}</span></span>
+        <span class="metrica-label">Copias Disponibles</span>
       </div>
     </div>
-  </div>
 
-  <!-- Barra de Búsqueda y Selector de Vista -->
-  <div class="toolbar">
-    <div class="buscador-caja">
-      <svg class="icono-lupa" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="11" cy="11" r="8"></circle>
-        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-      </svg>
-      <input
-        class="buscador-input"
-        type="search"
-        placeholder="Buscar por título, autor o código ISBN…"
-        [value]="busqueda()"
-        (input)="buscar($event)"
-      />
-      @if (busqueda()) {
-        <button type="button" class="btn-limpiar" (click)="limpiarBusqueda()" title="Limpiar búsqueda">✕</button>
-      }
+    <div class="metrica-card">
+      <div class="metrica-icono icono-blue">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+        </svg>
+      </div>
+      <div class="metrica-datos">
+        <span class="metrica-valor">{{ porcentajeDisponibilidad() }}%</span>
+        <span class="metrica-label">Disponibilidad Real</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Barra de Búsqueda, Filtros y Orden -->
+  <section class="toolbar-panel">
+    <div class="toolbar-row">
+      <div class="buscador-caja">
+        <svg class="icono-lupa" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input
+          #buscadorRef
+          class="buscador-input"
+          type="search"
+          placeholder="Buscar por título, autor, año o código ISBN…"
+          [value]="busqueda()"
+          (input)="buscar($event)"
+        />
+        @if (busqueda()) {
+          <button type="button" class="btn-limpiar" (click)="limpiarBusqueda()" title="Limpiar búsqueda" aria-label="Limpiar búsqueda">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        } @else {
+          <span class="kbd-hint" title="Presiona / para buscar">/</span>
+        }
+      </div>
+
+      <div class="toolbar-controles">
+        <select aria-label="Ordenar catálogo" class="select-custom select-orden" [value]="orden()" (change)="cambiarOrden($event)">
+          <option value="recientes">Orden: Más recientes</option>
+          <option value="titulo">Orden: Título (A–Z)</option>
+          <option value="autor">Orden: Autor (A–Z)</option>
+          <option value="anio">Orden: Año publicación</option>
+          <option value="disponibilidad">Orden: Mayor disponibilidad</option>
+        </select>
+
+        <div class="vista-selector" role="group" aria-label="Modo de visualización">
+          <button
+            type="button"
+            class="btn-vista"
+            [class.activo]="vista() === 'grid'"
+            (click)="cambiarVista('grid')"
+            title="Vista de Estantería Virtual"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect width="7" height="7" x="3" y="3" rx="1"></rect>
+              <rect width="7" height="7" x="14" y="3" rx="1"></rect>
+              <rect width="7" height="7" x="14" y="14" rx="1"></rect>
+              <rect width="7" height="7" x="3" y="14" rx="1"></rect>
+            </svg>
+            <span>Estantería</span>
+          </button>
+
+          <button
+            type="button"
+            class="btn-vista"
+            [class.activo]="vista() === 'tabla'"
+            (click)="cambiarVista('tabla')"
+            title="Vista en Tabla Detallada"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="8" y1="6" x2="21" y2="6"></line>
+              <line x1="8" y1="12" x2="21" y2="12"></line>
+              <line x1="8" y1="18" x2="21" y2="18"></line>
+              <line x1="3" y1="6" x2="3.01" y2="6"></line>
+              <line x1="3" y1="12" x2="3.01" y2="12"></line>
+              <line x1="3" y1="18" x2="3.01" y2="18"></line>
+            </svg>
+            <span>Tabla</span>
+          </button>
+        </div>
+      </div>
     </div>
 
-    <div class="vista-selector">
-      <button
-        type="button"
-        class="btn-vista"
-        [class.activo]="vista() === 'grid'"
-        (click)="cambiarVista('grid')"
-        title="Vista de Estantería Virtual"
-      >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect width="7" height="7" x="3" y="3" rx="1"></rect>
-          <rect width="7" height="7" x="14" y="3" rx="1"></rect>
-          <rect width="7" height="7" x="14" y="14" rx="1"></rect>
-          <rect width="7" height="7" x="3" y="14" rx="1"></rect>
-        </svg>
-        <span>Estantería</span>
-      </button>
+    <div class="toolbar-row toolbar-subrow">
+      <div class="pildoras-filtro" role="group" aria-label="Filtrar obras">
+        <button type="button" class="btn-pildora" [class.activo]="filtro() === 'TODOS'" (click)="cambiarFiltro('TODOS')">
+          Todas <span class="pildora-count">{{ totalLibros() }}</span>
+        </button>
+        <button type="button" class="btn-pildora" [class.activo]="filtro() === 'DISPONIBLES'" (click)="cambiarFiltro('DISPONIBLES')">
+          Disponibles ahora
+        </button>
+        <button type="button" class="btn-pildora" [class.activo]="filtro() === 'CLASICOS'" (click)="cambiarFiltro('CLASICOS')">
+          Clásicos (&lt;1980)
+        </button>
+        <button type="button" class="btn-pildora" [class.activo]="filtro() === 'CONTEMPORANEOS'" (click)="cambiarFiltro('CONTEMPORANEOS')">
+          Contemporáneos
+        </button>
+      </div>
 
-      <button
-        type="button"
-        class="btn-vista"
-        [class.activo]="vista() === 'tabla'"
-        (click)="cambiarVista('tabla')"
-        title="Vista de Tabla Detallada"
-      >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="8" y1="6" x2="21" y2="6"></line>
-          <line x1="8" y1="12" x2="21" y2="12"></line>
-          <line x1="8" y1="18" x2="21" y2="18"></line>
-          <line x1="3" y1="6" x2="3.01" y2="6"></line>
-          <line x1="3" y1="12" x2="3.01" y2="12"></line>
-          <line x1="3" y1="18" x2="3.01" y2="18"></line>
-        </svg>
-        <span>Tabla</span>
-      </button>
+      <span class="resultados-info">
+        Mostrando <strong>{{ librosFiltrados().length }}</strong> de {{ totalLibros() }} obras
+      </span>
     </div>
-  </div>
+  </section>
 
   @if (error()) {
     <div class="alerta-error">
-      <span>{{ error() }}</span>
-      <button class="btn btn-sm" (click)="cargar()">Reintentar</button>
+      <div class="alerta-error-izq">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <span>{{ error() }}</span>
+      </div>
+      <button type="button" class="btn btn-sm" (click)="cargar()">Reintentar</button>
     </div>
   }
 
   @if (cargando()) {
-    <div class="cargando-contenedor">
-      <div class="spinner"></div>
-      <p>Cargando catálogo literario…</p>
+    <div class="skeleton-grid" aria-label="Cargando catálogo">
+      @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+        <div class="skeleton-card" style="padding: 0;">
+          <div class="skeleton-block" style="height: 215px; border-radius: 0;"></div>
+          <div style="padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+            <div class="skeleton-block" style="height: 16px; width: 65%;"></div>
+            <div class="skeleton-block" style="height: 12px; width: 45%;"></div>
+            <div class="skeleton-block" style="height: 36px; width: 100%; margin-top: 8px;"></div>
+          </div>
+        </div>
+      }
     </div>
   } @else {
 
-    <!-- ==================== VISTA 1: ESTANTERÍA VIRTUAL (GRID) ==================== -->
+    <!-- ==================== VISTA 1: ESTANTERÍA VIRTUAL 3D ==================== -->
     @if (vista() === 'grid') {
       <div class="libros-grid">
         @for (libro of librosFiltrados(); track libro.id) {
+          @let tema = temaPortada(libro);
+          @let copias = contarCopias(libro.id);
+          @let disponibles = contarDisponibles(libro.id);
+
           <article class="libro-card">
-            <!-- Portada Estilizada 3D del Libro -->
-            <div class="libro-portada" [style.background]="obtenerGradiente(libro.id)">
-              <div class="libro-lomo"></div>
-              <div class="libro-portada-badge">
-                {{ libro.anioPublicacion ?? 'S/F' }}
+            <!-- Portada Editorial 3D -->
+            <button
+              type="button"
+              class="book-jacket libro-portada-btn"
+              [style.background]="tema.fondo"
+              [style.--jacket-accent]="tema.acento"
+              [style.--jacket-border]="tema.borde"
+              [style.--jacket-pattern]="tema.patron"
+              (click)="abrirDetalle(libro)"
+              [attr.aria-label]="'Ver ficha completa de ' + libro.titulo"
+            >
+              <div class="book-spine"></div>
+              <div class="book-jacket-top">
+                <div class="book-emblem" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                  </svg>
+                </div>
+                <span class="book-year-pill">{{ libro.anioPublicacion ?? 'S/F' }}</span>
               </div>
-              <div class="libro-portada-adorno">✦ ✦ ✦</div>
-              <h2 class="libro-portada-titulo">{{ libro.titulo }}</h2>
-            </div>
 
-            <!-- Cuerpo del Libro -->
+              <div class="book-jacket-bottom">
+                <span class="book-jacket-divider"></span>
+                <h2 class="book-jacket-title">{{ libro.titulo }}</h2>
+                <span class="book-jacket-author">{{ libro.autor }}</span>
+              </div>
+              <span class="portada-hover-hint">Ver ficha rápida</span>
+            </button>
+
+            <!-- Cuerpo de la Tarjeta -->
             <div class="libro-cuerpo">
-              <div class="libro-autor-linea">
-                <span class="autor-icono">🖋️</span>
-                <span class="libro-autor">{{ libro.autor }}</span>
-              </div>
-
-              <div class="libro-meta">
-                @if (libro.isbn) {
-                  <span class="isbn-tag" title="ISBN">ISBN: {{ libro.isbn }}</span>
+              <div class="libro-estado-fila">
+                @if (copias === 0) {
+                  <span class="badge badge-gris">
+                    <span class="badge-dot-sm"></span>
+                    Sin copias físicas
+                  </span>
+                } @else if (disponibles > 0) {
+                  <span class="badge badge-verde">
+                    <span class="badge-dot-sm"></span>
+                    {{ disponibles }} de {{ copias }} disponible{{ disponibles === 1 ? '' : 's' }}
+                  </span>
+                } @else {
+                  <span class="badge badge-amarillo">
+                    <span class="badge-dot-sm"></span>
+                    Sin disponibilidad ({{ copias }})
+                  </span>
                 }
                 <span class="id-tag">#{{ libro.id }}</span>
               </div>
 
+              <div class="libro-meta-fila">
+                @if (libro.isbn) {
+                  <button
+                    type="button"
+                    class="isbn-copy-btn"
+                    (click)="copiarIsbn(libro.isbn, $event)"
+                    title="Copiar ISBN"
+                  >
+                    <span>ISBN {{ libro.isbn }}</span>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
+                      <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path>
+                    </svg>
+                  </button>
+                } @else {
+                  <span class="secundario" style="margin: 0;">Sin ISBN registrado</span>
+                }
+              </div>
+
               <div class="libro-pie">
+                <button type="button" class="btn btn-sm btn-ficha" (click)="abrirDetalle(libro)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                  <span>Detalles</span>
+                </button>
+
                 <a class="btn btn-sm btn-ejemplares" routerLink="/ejemplares" [queryParams]="{ libroId: libro.id }">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"></path>
                   </svg>
-                  <span>Ver Ejemplares</span>
+                  <span>Ejemplares</span>
                 </a>
 
                 @if (esAdmin()) {
                   <div class="admin-actions">
-                    <a class="btn btn-sm btn-icon" [routerLink]="['/libros', libro.id, 'editar']" title="Editar libro">
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <a class="btn btn-sm btn-icon" [routerLink]="['/libros', libro.id, 'editar']" title="Editar obra" aria-label="Editar obra">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                       </svg>
                     </a>
-                    <button class="btn btn-sm btn-peligro btn-icon" (click)="eliminar(libro)" title="Eliminar obra">
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <button type="button" class="btn btn-sm btn-peligro btn-icon" (click)="eliminar(libro, $event)" title="Eliminar obra" aria-label="Eliminar obra">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="3 6 5 6 21 6"></polyline>
                         <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                       </svg>
@@ -175,12 +345,30 @@
           </article>
         } @empty {
           <div class="vacio-box">
-            <div class="vacio-icono">📖</div>
+            <div class="vacio-icono-wrap">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+            </div>
             <h3>No se encontraron obras</h3>
-            <p>No hay libros que coincidan con el término "{{ busqueda() }}".</p>
-            @if (busqueda()) {
-              <button class="btn btn-sm" (click)="limpiarBusqueda()">Limpiar búsqueda</button>
-            }
+            <p>
+              @if (busqueda()) {
+                No hay coincidencias para “{{ busqueda() }}” con el filtro seleccionado.
+              } @else {
+                No existen obras que coincidan con el filtro aplicado en este momento.
+              }
+            </p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+              @if (busqueda() || filtro() !== 'TODOS') {
+                <button type="button" class="btn btn-sm" (click)="limpiarBusqueda(); cambiarFiltro('TODOS')">
+                  Restablecer filtros
+                </button>
+              }
+              @if (esAdmin()) {
+                <a routerLink="/libros/nuevo" class="btn btn-sm btn-dorado">Registrar nueva obra</a>
+              }
+            </div>
           </div>
         }
       </div>
@@ -188,54 +376,196 @@
 
     <!-- ==================== VISTA 2: TABLA DETALLADA ==================== -->
     @if (vista() === 'tabla') {
-      <div class="tarjeta tabla-contenedor anim-fade">
+      <div class="tabla-contenedor anim-fade">
         <table>
           <thead>
             <tr>
-              <th style="width: 70px;">ID</th>
-              <th>Título de la Obra</th>
+              <th>Obra Literaria</th>
               <th>Autor</th>
               <th>ISBN</th>
               <th>Año</th>
+              <th>Disponibilidad</th>
               <th style="text-align: right;">Acciones</th>
             </tr>
           </thead>
           <tbody>
             @for (libro of librosFiltrados(); track libro.id) {
+              @let tema = temaPortada(libro);
+              @let copias = contarCopias(libro.id);
+              @let disponibles = contarDisponibles(libro.id);
               <tr>
-                <td><span class="id-tag">#{{ libro.id }}</span></td>
                 <td>
-                  <strong class="libro-tabla-titulo">{{ libro.titulo }}</strong>
+                  <div class="tabla-obra-celda">
+                    <span class="mini-lomo" [style.background]="tema.fondo"></span>
+                    <div>
+                      <button type="button" class="titulo-link" (click)="abrirDetalle(libro)">
+                        {{ libro.titulo }}
+                      </button>
+                      <span class="secundario">Catálogo #{{ libro.id }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="libro-tabla-autor">{{ libro.autor }}</span></td>
+                <td>
+                  @if (libro.isbn) {
+                    <code class="codigo-badge">{{ libro.isbn }}</code>
+                  } @else {
+                    <span class="secundario" style="margin: 0;">—</span>
+                  }
                 </td>
                 <td>
-                  <span class="libro-tabla-autor">{{ libro.autor }}</span>
+                  <span class="badge badge-gris">{{ libro.anioPublicacion ?? 'S/F' }}</span>
                 </td>
                 <td>
-                  <code class="codigo-isbn">{{ libro.isbn }}</code>
-                </td>
-                <td>
-                  <span class="badge badge-gris">{{ libro.anioPublicacion ?? '—' }}</span>
+                  @if (copias === 0) {
+                    <span class="badge badge-gris">Sin copias</span>
+                  } @else if (disponibles > 0) {
+                    <span class="badge badge-verde">{{ disponibles }} / {{ copias }} disp.</span>
+                  } @else {
+                    <span class="badge badge-amarillo">0 / {{ copias }} disp.</span>
+                  }
                 </td>
                 <td class="acciones">
-                  <a class="btn btn-sm" routerLink="/ejemplares" [queryParams]="{ libroId: libro.id }">
-                    Ejemplares
-                  </a>
+                  <button type="button" class="btn btn-sm" (click)="abrirDetalle(libro)">Ficha</button>
+                  <a class="btn btn-sm" routerLink="/ejemplares" [queryParams]="{ libroId: libro.id }">Ejemplares</a>
                   @if (esAdmin()) {
                     <a class="btn btn-sm" [routerLink]="['/libros', libro.id, 'editar']">Editar</a>
-                    <button class="btn btn-sm btn-peligro" (click)="eliminar(libro)">Eliminar</button>
+                    <button type="button" class="btn btn-sm btn-peligro" (click)="eliminar(libro, $event)">Eliminar</button>
                   }
                 </td>
               </tr>
             } @empty {
               <tr>
-                <td colspan="6" class="vacio">No hay libros para mostrar con el filtro actual.</td>
+                <td colspan="6" class="vacio">No hay libros para mostrar con los filtros actuales.</td>
               </tr>
             }
           </tbody>
         </table>
       </div>
     }
-
   }
-
 </div>
+
+<!-- ==================== DRAWER DE FICHA RÁPIDA DE OBRA ==================== -->
+@if (libroSeleccionado(); as libro) {
+  @let tema = temaPortada(libro);
+  <div class="drawer-backdrop" (click)="cerrarDetalle()" role="presentation">
+    <aside class="drawer-panel" role="dialog" aria-modal="true" aria-label="Ficha de obra" (click)="$event.stopPropagation()">
+      <div class="drawer-topbar">
+        <span class="drawer-eyebrow">FICHA BIBLIOGRÁFICA · #{{ libro.id }}</span>
+        <button type="button" class="btn btn-sm btn-icon btn-ghost" (click)="cerrarDetalle()" aria-label="Cerrar ficha">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="drawer-scroll">
+        <!-- Portada ampliada -->
+        <div
+          class="book-jacket drawer-jacket"
+          [style.background]="tema.fondo"
+          [style.--jacket-accent]="tema.acento"
+          [style.--jacket-border]="tema.borde"
+          [style.--jacket-pattern]="tema.patron"
+        >
+          <div class="book-spine"></div>
+          <div class="book-jacket-top">
+            <div class="book-emblem">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+            </div>
+            <span class="book-year-pill">{{ libro.anioPublicacion ?? 'Sin fecha' }}</span>
+          </div>
+          <div class="book-jacket-bottom">
+            <span class="book-jacket-divider"></span>
+            <h2 class="book-jacket-title" style="font-size: 1.55rem;">{{ libro.titulo }}</h2>
+            <span class="book-jacket-author">{{ libro.autor }}</span>
+          </div>
+        </div>
+
+        <!-- Metadatos -->
+        <div class="drawer-meta-grid">
+          <div class="drawer-meta-item">
+            <span class="drawer-meta-label">Autor</span>
+            <strong>{{ libro.autor }}</strong>
+          </div>
+          <div class="drawer-meta-item">
+            <span class="drawer-meta-label">Año de edición</span>
+            <strong>{{ libro.anioPublicacion ?? 'No registrado' }}</strong>
+          </div>
+          <div class="drawer-meta-item drawer-meta-full">
+            <span class="drawer-meta-label">Código ISBN</span>
+            <div class="drawer-isbn-row">
+              <code>{{ libro.isbn || 'Sin asignar' }}</code>
+              @if (libro.isbn) {
+                <button type="button" class="btn btn-sm btn-ghost" (click)="copiarIsbn(libro.isbn, $event)">Copiar</button>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Ejemplares físicos asociados -->
+        <div class="drawer-section">
+          <div class="drawer-section-header">
+            <h3>Ejemplares en Inventario ({{ ejemplaresDelSeleccionado().length }})</h3>
+            <a routerLink="/ejemplares" [queryParams]="{ libroId: libro.id }" class="drawer-link" (click)="cerrarDetalle()">
+              Ver vista completa
+            </a>
+          </div>
+
+          <div class="drawer-ejemplares">
+            @for (ej of ejemplaresDelSeleccionado(); track ej.id) {
+              <div class="drawer-ej-item">
+                <div class="drawer-ej-info">
+                  <span class="codigo-badge">{{ ej.codigo }}</span>
+                  <span class="drawer-ej-ubic">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                      <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    {{ ej.ubicacion ?? 'Depósito General' }}
+                  </span>
+                </div>
+                <div class="drawer-ej-right">
+                  <span class="badge" [class]="claseEstado(ej.estado)">{{ textoEstado(ej.estado) }}</span>
+                  @if (esAdmin() && ej.estado === 'DISPONIBLE') {
+                    <a
+                      routerLink="/prestamos/nuevo"
+                      [queryParams]="{ ejemplarId: ej.id }"
+                      class="btn btn-sm btn-dorado"
+                      (click)="cerrarDetalle()"
+                    >
+                      Prestar
+                    </a>
+                  }
+                </div>
+              </div>
+            } @empty {
+              <div class="drawer-empty">
+                No existen copias físicas registradas para esta obra todavía.
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="drawer-footer">
+        <a routerLink="/ejemplares" [queryParams]="{ libroId: libro.id }" class="btn" (click)="cerrarDetalle()">
+          Ir a Ejemplares
+        </a>
+        @if (esAdmin()) {
+          <a routerLink="/ejemplares/nuevo" [queryParams]="{ libroId: libro.id }" class="btn" (click)="cerrarDetalle()">
+            + Copia
+          </a>
+          <a [routerLink]="['/libros', libro.id, 'editar']" class="btn btn-primario" (click)="cerrarDetalle()">
+            Editar Obra
+          </a>
+        }
+      </div>
+    </aside>
+  </div>
+}

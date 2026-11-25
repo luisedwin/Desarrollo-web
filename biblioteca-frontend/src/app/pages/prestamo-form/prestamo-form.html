@@ -1,71 +1,158 @@
-<div class="catalogo-wrapper anim-fade" style="max-width: 680px; margin: 0 auto;">
-  <div class="catalogo-hero" style="border: none; margin-bottom: 8px;">
-    <div>
-      <div class="hero-tag">NUEVA TRANSACCIÓN</div>
+<div class="form-page anim-fade">
+  <a routerLink="/prestamos" class="breadcrumb-link">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+      <polyline points="15 18 9 12 15 6"></polyline>
+    </svg>
+    <span>Volver a Préstamos</span>
+  </a>
+
+  <section class="page-hero">
+    <div class="page-hero-texto">
+      <div class="hero-tag">NUEVA TRANSACCIÓN DE SALA</div>
       <h1>Registrar Préstamo</h1>
       <p class="catalogo-sub">
-        Formaliza la entrega temporal de una obra física a un socio lector acreditado.
+        Formaliza la entrega temporal de un ejemplar disponible a un lector acreditado y fija su plazo de devolución.
       </p>
     </div>
-  </div>
+  </section>
 
   @if (error()) {
-    <div class="alerta-error">
+  <div class="alerta-error">
+    <div class="alerta-error-izq">
       <span>{{ error() }}</span>
     </div>
+  </div>
   }
 
-  <form class="tarjeta formulario anim-fade" [formGroup]="form" (ngSubmit)="guardar()" style="max-width: none;">
-    <label>
-      Socio Lector Receptor *
-      <select formControlName="socioId" [class.invalido]="invalido('socioId')">
-        <option [ngValue]="null" disabled>Selecciona un lector habilitado…</option>
-        @for (socio of socios(); track socio.id) {
+  <div class="form-split">
+    <form class="tarjeta formulario" [formGroup]="form" (ngSubmit)="guardar()">
+      <label>
+        <span>Socio Lector Receptor <span class="label-req">*</span></span>
+        <select formControlName="socioId" [class.invalido]="invalido('socioId')">
+          <option [ngValue]="null" disabled>Selecciona un lector habilitado…</option>
+          @for (socio of socios(); track socio.id) {
           <option [ngValue]="socio.id">{{ socio.apellido }}, {{ socio.nombre }} (DNI: {{ socio.documento }})</option>
-        }
-      </select>
-      @if (invalido('socioId')) {
+          }
+        </select>
+        @if (invalido('socioId')) {
         <small>Debes seleccionar al socio solicitante.</small>
-      } @else {
+        } @else {
         <small class="ayuda">Mostrando exclusivamente lectores con membresía activa.</small>
-      }
-    </label>
-
-    <label>
-      Ejemplar Físico a Prestar *
-      <select formControlName="ejemplarId" [class.invalido]="invalido('ejemplarId')">
-        <option [ngValue]="null" disabled>
-          {{ ejemplares().length ? 'Selecciona una copia disponible…' : 'No existen ejemplares disponibles en este momento' }}
-        </option>
-        @for (ejemplar of ejemplares(); track ejemplar.id) {
-          <option [ngValue]="ejemplar.id">🏷️ {{ ejemplar.codigo }} — "{{ ejemplar.libro.titulo }}"</option>
         }
-      </select>
-      @if (invalido('ejemplarId')) {
+      </label>
+
+      <label>
+        <span>Ejemplar Físico a Prestar <span class="label-req">*</span></span>
+        <select formControlName="ejemplarId" [class.invalido]="invalido('ejemplarId')">
+          <option [ngValue]="null" disabled>
+            {{ ejemplares().length ? 'Selecciona una copia disponible…' : 'No existen ejemplares disponibles en este
+            momento' }}
+          </option>
+          @for (ejemplar of ejemplares(); track ejemplar.id) {
+          <option [ngValue]="ejemplar.id">{{ ejemplar.codigo }} — {{ ejemplar.libro.titulo }} ({{ ejemplar.ubicacion ??
+            'Depósito' }})</option>
+          }
+        </select>
+        @if (invalido('ejemplarId')) {
         <small>Debes seleccionar la copia física a entregar.</small>
-      } @else {
-        <small class="ayuda">Solo se muestran los ejemplares en estado DISPONIBLE.</small>
-      }
-    </label>
+        } @else {
+        <small class="ayuda">Solo se listan ejemplares con estado DISPONIBLE.</small>
+        }
+      </label>
 
-    <label>
-      Fecha Límite Prevista de Devolución *
-      <input
-        type="date"
-        formControlName="fechaDevolucionPrevista"
-        [min]="hoy"
-        [class.invalido]="invalido('fechaDevolucionPrevista')"
-      />
-      @if (invalido('fechaDevolucionPrevista')) {
+      <label>
+        <span>Fecha Límite de Devolución <span class="label-req">*</span></span>
+        <input type="date" formControlName="fechaDevolucionPrevista" [min]="hoy"
+          [class.invalido]="invalido('fechaDevolucionPrevista')" />
+        <div class="duration-chips" role="group" aria-label="Plazos rápidos">
+          @for (dias of plazosRapidos; track dias) {
+          <button type="button" class="duration-chip" [class.activo]="diasSeleccionados() === dias"
+            (click)="aplicarPlazo(dias)">
+            +{{ dias }} días
+          </button>
+          }
+        </div>
+        @if (invalido('fechaDevolucionPrevista')) {
         <small>Indica la fecha máxima de entrega acordada.</small>
-      }
-    </label>
+        }
+      </label>
 
-    <div class="botones" style="margin-top: 16px;">
-      <a routerLink="/prestamos" class="btn">Cancelar</a>
-      <button type="submit" class="btn btn-primario" [disabled]="guardando()">
-        {{ guardando() ? 'Registrando salida…' : 'Confirmar Préstamo' }}
-      </button>
-    </div>
-  </form>
+      <div class="botones">
+        <a routerLink="/prestamos" class="btn">Cancelar</a>
+        <button type="submit" class="btn btn-dorado" [disabled]="guardando() || !ejemplares().length">
+          {{ guardando() ? 'Registrando salida…' : 'Confirmar Préstamo' }}
+        </button>
+      </div>
+    </form>
+
+    <!-- Comprobante en Vivo -->
+    <aside class="preview-panel" aria-label="Resumen de préstamo">
+      <div class="preview-label">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+        </svg>
+        <span>COMPROBANTE DE CIRCULACIÓN</span>
+      </div>
+
+      @let socio = socioSeleccionado();
+      @let ej = ejemplarSeleccionado();
+      @let prev = vistaPrevia();
+      <div
+        style="display: flex; flex-direction: column; gap: 14px; padding: 18px; border-radius: 14px; background: var(--bg-surface); border: 1px solid var(--border-subtle);">
+        <div>
+          <span
+            style="display: block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 3px;">
+            Lector Receptor
+          </span>
+          <strong style="font-size: 0.96rem; color: var(--text-primary);">
+            {{ socio ? socio.nombre + ' ' + socio.apellido : 'Sin seleccionar' }}
+          </strong>
+          @if (socio) {
+          <span class="secundario" style="margin-top: 2px;">DNI {{ socio.documento }}</span>
+          }
+        </div>
+
+        <div style="padding-top: 12px; border-top: 1px dashed var(--border-medium);">
+          <span
+            style="display: block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 3px;">
+            Ejemplar a Entregar
+          </span>
+          <strong style="font-family: var(--font-serif); font-size: 1.05rem; color: var(--text-primary);">
+            {{ ej ? ej.libro.titulo : 'Sin seleccionar' }}
+          </strong>
+          @if (ej) {
+          <div style="margin-top: 6px; display: flex; gap: 8px; flex-wrap: wrap;">
+            <span class="codigo-badge">{{ ej.codigo }}</span>
+            <span class="meta-chip">{{ ej.ubicacion ?? 'Depósito' }}</span>
+          </div>
+          }
+        </div>
+
+        <div
+          style="padding-top: 12px; border-top: 1px dashed var(--border-medium); display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div>
+            <span
+              style="display: block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted);">Retiro</span>
+            <strong class="font-mono" style="font-size: 0.86rem;">{{ hoy | fecha }}</strong>
+          </div>
+          <div>
+            <span
+              style="display: block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted);">Devolución</span>
+            <strong class="font-mono" style="font-size: 0.86rem; color: var(--accent-gold);">{{
+              prev.fechaDevolucionPrevista | fecha }}</strong>
+          </div>
+        </div>
+
+        <div
+          style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: 10px; background: var(--accent-gold-soft); border: 1px solid rgba(234, 179, 73, 0.25); font-size: 0.82rem;">
+          <span style="color: var(--text-secondary); font-weight: 600;">Plazo acordado</span>
+          <strong style="color: var(--accent-gold); font-family: var(--font-mono);">{{ diasSeleccionados() }}
+            días</strong>
+        </div>
+      </div>
+    </aside>
+  </div>
 </div>

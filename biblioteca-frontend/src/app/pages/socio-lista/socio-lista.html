@@ -1,218 +1,277 @@
 <div class="catalogo-wrapper anim-fade">
-  <div class="catalogo-hero">
-    <div>
-      <div class="hero-tag">PADRÓN DE USUARIOS</div>
+
+  <!-- Hero Editorial -->
+  <section class="page-hero">
+    <div class="page-hero-texto">
+      <div class="hero-tag">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+        <span>PADRÓN DE COMUNIDAD LECTORA</span>
+      </div>
       <h1>Directorio de Socios</h1>
       <p class="catalogo-sub">
-        Gestión de lectores registrados en el sistema, documentación de identidad y estado de membresía activa.
+        Administración de miembros acreditados, documentación de identidad, canales de contacto y vigencia de membresía.
       </p>
     </div>
-    <div>
-      <a routerLink="/socios/nuevo" class="btn btn-primario btn-nuevo">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+
+    <div class="page-hero-acciones">
+      <a routerLink="/socios/nuevo" class="btn btn-dorado btn-nuevo">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <line x1="12" y1="5" x2="12" y2="19"></line>
           <line x1="5" y1="12" x2="19" y2="12"></line>
         </svg>
-        <span>+ Registrar Nuevo Socio</span>
+        <span>Registrar Socio</span>
       </a>
     </div>
-  </div>
+  </section>
 
-  <!-- Métricas en Tarjetas Horizontales Separadas -->
-  <div class="metricas-grid">
+  <!-- Métricas -->
+  <section class="metricas-grid">
     <div class="metrica-card">
-      <div class="metrica-icono">👥</div>
+      <div class="metrica-icono icono-gold">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+      </div>
       <div class="metrica-datos">
         <span class="metrica-valor">{{ totalSocios() }}</span>
         <span class="metrica-label">Lectores Registrados</span>
       </div>
     </div>
+
     <div class="metrica-card">
-      <div class="metrica-icono" style="color: var(--accent-success);">✅</div>
+      <div class="metrica-icono icono-green">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+      </div>
       <div class="metrica-datos">
         <span class="metrica-valor">{{ totalActivos() }}</span>
-        <span class="metrica-label">Membresías Habilitadas</span>
+        <span class="metrica-label">Membresías Activas ({{ porcentajeActivos() }}%)</span>
       </div>
     </div>
+
     <div class="metrica-card">
-      <div class="metrica-icono" style="color: var(--text-muted);">⏸️</div>
+      <div class="metrica-icono icono-amber">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="10" y1="15" x2="10" y2="9"></line>
+          <line x1="14" y1="15" x2="14" y2="9"></line>
+        </svg>
+      </div>
       <div class="metrica-datos">
         <span class="metrica-valor">{{ totalInactivos() }}</span>
         <span class="metrica-label">Cuentas Inactivas</span>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- Toolbar: Buscador Mejorado con Lupa, Píldoras de Estado y Selector de Vista -->
-  <div class="toolbar-socios">
-    <div class="buscador-caja">
-      <svg class="icono-lupa" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-        <circle cx="11" cy="11" r="8"></circle>
-        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-      </svg>
-      <input
-        class="buscador-input"
-        type="search"
-        placeholder="Buscar por nombre, documento (DNI) o correo electrónico…"
-        [value]="busqueda()"
-        (input)="buscar($event)"
-      />
-      @if (busqueda()) {
-        <button type="button" class="btn-limpiar" (click)="limpiarBusqueda()" title="Limpiar búsqueda">✕</button>
-      }
-    </div>
-
-    <!-- Píldoras de Filtro -->
-    <div class="pildoras-filtro">
-      <button
-        type="button"
-        class="btn-pildora"
-        [class.activo]="filtroActivo() === 'TODOS'"
-        (click)="cambiarFiltroEstado('TODOS')"
-      >
-        Todos ({{ totalSocios() }})
-      </button>
-      <button
-        type="button"
-        class="btn-pildora"
-        [class.activo]="filtroActivo() === 'ACTIVOS'"
-        (click)="cambiarFiltroEstado('ACTIVOS')"
-      >
-        Activos ({{ totalActivos() }})
-      </button>
-      <button
-        type="button"
-        class="btn-pildora"
-        [class.activo]="filtroActivo() === 'INACTIVOS'"
-        (click)="cambiarFiltroEstado('INACTIVOS')"
-      >
-        Inactivos ({{ totalInactivos() }})
-      </button>
-    </div>
-
-    <!-- Selector de Vista Tarjetas / Tabla -->
-    <div class="vista-selector">
-      <button
-        type="button"
-        class="btn-vista"
-        [class.activo]="vista() === 'tarjetas'"
-        (click)="cambiarVista('tarjetas')"
-        title="Vista en Tarjetas de Socios"
-      >
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect width="7" height="7" x="3" y="3" rx="1"></rect>
-          <rect width="7" height="7" x="14" y="3" rx="1"></rect>
-          <rect width="7" height="7" x="14" y="14" rx="1"></rect>
-          <rect width="7" height="7" x="3" y="14" rx="1"></rect>
+  <!-- Toolbar -->
+  <section class="toolbar-panel">
+    <div class="toolbar-row">
+      <div class="buscador-caja">
+        <svg class="icono-lupa" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
-        <span>Tarjetas</span>
-      </button>
+        <input
+          class="buscador-input"
+          type="search"
+          placeholder="Buscar por nombre, apellido, DNI, correo o teléfono…"
+          [value]="busqueda()"
+          (input)="buscar($event)"
+        />
+        @if (busqueda()) {
+          <button type="button" class="btn-limpiar" (click)="limpiarBusqueda()" aria-label="Limpiar búsqueda">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        }
+      </div>
 
-      <button
-        type="button"
-        class="btn-vista"
-        [class.activo]="vista() === 'tabla'"
-        (click)="cambiarVista('tabla')"
-        title="Vista en Tabla"
-      >
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="8" y1="6" x2="21" y2="6"></line>
-          <line x1="8" y1="12" x2="21" y2="12"></line>
-          <line x1="8" y1="18" x2="21" y2="18"></line>
-          <line x1="3" y1="6" x2="3.01" y2="6"></line>
-          <line x1="3" y1="12" x2="3.01" y2="12"></line>
-          <line x1="3" y1="18" x2="3.01" y2="18"></line>
-        </svg>
-        <span>Tabla</span>
-      </button>
+      <div class="pildoras-filtro">
+        <button type="button" class="btn-pildora" [class.activo]="filtroActivo() === 'TODOS'" (click)="cambiarFiltroEstado('TODOS')">
+          Todos <span class="pildora-count">{{ totalSocios() }}</span>
+        </button>
+        <button type="button" class="btn-pildora" [class.activo]="filtroActivo() === 'ACTIVOS'" (click)="cambiarFiltroEstado('ACTIVOS')">
+          Activos <span class="pildora-count">{{ totalActivos() }}</span>
+        </button>
+        <button type="button" class="btn-pildora" [class.activo]="filtroActivo() === 'INACTIVOS'" (click)="cambiarFiltroEstado('INACTIVOS')">
+          Inactivos <span class="pildora-count">{{ totalInactivos() }}</span>
+        </button>
+      </div>
+
+      <div class="vista-selector">
+        <button type="button" class="btn-vista" [class.activo]="vista() === 'tarjetas'" (click)="cambiarVista('tarjetas')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect width="7" height="7" x="3" y="3" rx="1"></rect>
+            <rect width="7" height="7" x="14" y="3" rx="1"></rect>
+            <rect width="7" height="7" x="14" y="14" rx="1"></rect>
+            <rect width="7" height="7" x="3" y="14" rx="1"></rect>
+          </svg>
+          <span>Tarjetas</span>
+        </button>
+        <button type="button" class="btn-vista" [class.activo]="vista() === 'tabla'" (click)="cambiarVista('tabla')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="8" y1="6" x2="21" y2="6"></line>
+            <line x1="8" y1="12" x2="21" y2="12"></line>
+            <line x1="8" y1="18" x2="21" y2="18"></line>
+            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+          </svg>
+          <span>Tabla</span>
+        </button>
+      </div>
     </div>
-  </div>
+  </section>
 
   @if (error()) {
     <div class="alerta-error">
-      <span>{{ error() }}</span>
+      <div class="alerta-error-izq">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <span>{{ error() }}</span>
+      </div>
+      <button type="button" class="btn btn-sm" (click)="cargar()">Reintentar</button>
     </div>
   }
 
   @if (cargando()) {
-    <div class="cargando-contenedor">
-      <div class="spinner"></div>
-      <p>Cargando padrón de socios…</p>
+    <div class="skeleton-grid">
+      @for (i of [1, 2, 3, 4]; track i) {
+        <div class="skeleton-card" style="height: 210px;">
+          <div class="skeleton-block" style="height: 36px; width: 65%;"></div>
+          <div class="skeleton-block" style="height: 14px; width: 85%;"></div>
+          <div class="skeleton-block" style="height: 14px; width: 55%;"></div>
+          <div class="skeleton-block" style="height: 32px; width: 100%; margin-top: auto;"></div>
+        </div>
+      }
     </div>
   } @else {
 
-    <!-- ==================== VISTA 1: EN TARJETAS INDIVIDUALES ==================== -->
+    <!-- ==================== VISTA 1: TARJETAS ==================== -->
     @if (vista() === 'tarjetas') {
       <div class="tarjetas-grid anim-fade">
         @for (socio of sociosFiltrados(); track socio.id) {
           <article class="dato-card">
             <div class="dato-card-header">
               <div class="socio-avatar-grupo">
-                <div class="socio-avatar">
-                  {{ socio.nombre.charAt(0) }}
+                <div class="socio-avatar" [style.background]="gradienteAvatar(socio)">
+                  {{ iniciales(socio) }}
                 </div>
-                <div>
-                  <h3 class="socio-nombre" style="font-size: 1.1rem; margin-bottom: 2px;">
-                    {{ socio.apellido }}, {{ socio.nombre }}
-                  </h3>
-                  <span class="documento-badge" style="font-size: 0.78rem; padding: 2px 7px;">
-                    🪪 {{ socio.documento }}
-                  </span>
+                <div class="socio-identidad">
+                  <h3 class="socio-nombre">{{ socio.apellido }}, {{ socio.nombre }}</h3>
+                  <button type="button" class="dni-copy" (click)="copiarDocumento(socio.documento)" title="Copiar DNI">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect width="20" height="14" x="2" y="5" rx="2"></rect>
+                      <line x1="2" y1="10" x2="22" y2="10"></line>
+                    </svg>
+                    <span>DNI {{ socio.documento }}</span>
+                  </button>
                 </div>
               </div>
 
               @if (socio.activo) {
-                <span class="badge badge-verde">✓ Activo</span>
+                <span class="badge badge-verde">
+                  <span class="badge-dot-sm"></span>
+                  Activo
+                </span>
               } @else {
-                <span class="badge badge-gris">Inactivo</span>
+                <span class="badge badge-gris">
+                  <span class="badge-dot-sm"></span>
+                  Inactivo
+                </span>
               }
             </div>
 
-            <div class="dato-card-body" style="gap: 8px;">
-              <div class="contacto-linea" style="display: flex; align-items: center; gap: 8px;">
-                <span style="color: var(--text-muted);">📧</span>
-                <span style="font-size: 0.88rem;">{{ socio.email ?? 'Sin correo registrado' }}</span>
+            <div class="dato-card-body socio-detalles">
+              <div class="contacto-fila">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                </svg>
+                @if (socio.email) {
+                  <a [href]="'mailto:' + socio.email" class="contacto-link">{{ socio.email }}</a>
+                } @else {
+                  <span class="contacto-vacio">Sin correo registrado</span>
+                }
               </div>
-              @if (socio.telefono) {
-                <div class="contacto-linea" style="display: flex; align-items: center; gap: 8px;">
-                  <span style="color: var(--text-muted);">📞</span>
-                  <span style="font-size: 0.88rem;">{{ socio.telefono }}</span>
-                </div>
-              }
-              <div style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 4px;">
-                📅 Miembro desde: <strong>{{ socio.fechaRegistro | fecha }}</strong>
+
+              <div class="contacto-fila">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                </svg>
+                @if (socio.telefono) {
+                  <a [href]="'tel:' + socio.telefono" class="contacto-link">{{ socio.telefono }}</a>
+                } @else {
+                  <span class="contacto-vacio">Sin teléfono</span>
+                }
+              </div>
+
+              <div class="contacto-fila">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+                  <path d="M8 2v4"></path>
+                  <path d="M16 2v4"></path>
+                  <path d="M3 10h18"></path>
+                </svg>
+                <span>Miembro desde <strong>{{ socio.fechaRegistro | fecha }}</strong></span>
               </div>
             </div>
 
             <div class="dato-card-footer">
-              <span class="secundario" style="margin: 0;">Socio #{{ socio.id }}</span>
+              <span class="id-tag">Socio #{{ socio.id }}</span>
               <div class="acciones">
                 <a class="btn btn-sm" [routerLink]="['/socios', socio.id, 'editar']">Editar</a>
-                <button class="btn btn-sm btn-peligro" (click)="eliminar(socio)">Eliminar</button>
+                <button type="button" class="btn btn-sm btn-peligro btn-icon" (click)="eliminar(socio)" title="Eliminar socio">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                </button>
               </div>
             </div>
           </article>
         } @empty {
           <div class="vacio-box">
-            <div class="vacio-icono">👥</div>
-            <h3>Sin socios</h3>
-            <p>No se encontraron socios registrados que coincidan con la búsqueda.</p>
+            <div class="vacio-icono-wrap">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <h3>Sin socios encontrados</h3>
+            <p>No existen lectores que coincidan con el criterio de búsqueda o filtro actual.</p>
           </div>
         }
       </div>
     }
 
-    <!-- ==================== VISTA 2: EN TABLA DETALLADA ==================== -->
+    <!-- ==================== VISTA 2: TABLA ==================== -->
     @if (vista() === 'tabla') {
-      <div class="tarjeta tabla-contenedor anim-fade">
+      <div class="tabla-contenedor anim-fade">
         <table>
           <thead>
             <tr>
-              <th style="width: 150px;">Documento</th>
               <th>Lector / Socio</th>
-              <th>Datos de Contacto</th>
-              <th>Fecha Registro</th>
-              <th>Membresía</th>
+              <th>Documento</th>
+              <th>Contacto</th>
+              <th>Alta</th>
+              <th>Estado</th>
               <th style="text-align: right;">Acciones</th>
             </tr>
           </thead>
@@ -220,55 +279,54 @@
             @for (socio of sociosFiltrados(); track socio.id) {
               <tr>
                 <td>
-                  <span class="documento-badge">
-                    🪪 {{ socio.documento }}
-                  </span>
-                </td>
-                <td>
                   <div class="socio-avatar-grupo">
-                    <div class="socio-avatar">
-                      {{ socio.nombre.charAt(0) }}
+                    <div class="socio-avatar socio-avatar-sm" [style.background]="gradienteAvatar(socio)">
+                      {{ iniciales(socio) }}
                     </div>
                     <div>
-                      <strong class="socio-nombre">{{ socio.apellido }}, {{ socio.nombre }}</strong>
-                      <span class="secundario">ID: #{{ socio.id }}</span>
+                      <strong class="socio-tabla-nombre">{{ socio.apellido }}, {{ socio.nombre }}</strong>
+                      <span class="secundario">Socio #{{ socio.id }}</span>
                     </div>
                   </div>
                 </td>
                 <td>
-                  <div class="contacto-linea">
-                    <span>📧 {{ socio.email ?? 'Sin correo' }}</span>
-                  </div>
-                  @if (socio.telefono) {
-                    <span class="secundario">📞 {{ socio.telefono }}</span>
-                  }
+                  <button type="button" class="dni-copy" (click)="copiarDocumento(socio.documento)" title="Copiar DNI">
+                    {{ socio.documento }}
+                  </button>
                 </td>
                 <td>
-                  <span style="font-size: 0.9rem; color: var(--text-secondary);">
-                    📅 {{ socio.fechaRegistro | fecha }}
+                  <div class="contacto-tabla">
+                    <span>{{ socio.email ?? 'Sin correo' }}</span>
+                    @if (socio.telefono) {
+                      <span class="secundario">{{ socio.telefono }}</span>
+                    }
+                  </div>
+                </td>
+                <td>
+                  <span class="font-mono" style="font-size: 0.84rem; color: var(--text-secondary);">
+                    {{ socio.fechaRegistro | fecha }}
                   </span>
                 </td>
                 <td>
                   @if (socio.activo) {
-                    <span class="badge badge-verde">✓ Activo</span>
+                    <span class="badge badge-verde"><span class="badge-dot-sm"></span>Activo</span>
                   } @else {
-                    <span class="badge badge-gris">Inactivo</span>
+                    <span class="badge badge-gris"><span class="badge-dot-sm"></span>Inactivo</span>
                   }
                 </td>
                 <td class="acciones">
                   <a class="btn btn-sm" [routerLink]="['/socios', socio.id, 'editar']">Editar</a>
-                  <button class="btn btn-sm btn-peligro" (click)="eliminar(socio)">Eliminar</button>
+                  <button type="button" class="btn btn-sm btn-peligro" (click)="eliminar(socio)">Eliminar</button>
                 </td>
               </tr>
             } @empty {
               <tr>
-                <td colspan="6" class="vacio">No se encontraron socios registrados que coincidan con la búsqueda.</td>
+                <td colspan="6" class="vacio">No se encontraron socios registrados con los filtros actuales.</td>
               </tr>
             }
           </tbody>
         </table>
       </div>
     }
-
   }
 </div>
